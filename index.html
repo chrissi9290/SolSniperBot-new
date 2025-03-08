@@ -1,209 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friedrich Coin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>SolSniper Bot</title>
     <style>
-        body {
-            background-color: #589ecc;
-            color: white;
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
-        /* Modern Header */
-        .header {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            position: fixed;
-            width: 100%;
-            z-index: 10;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .header h1 {
-            font-size: 2em;
-            margin: 0;
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            padding: 20px;
-            text-align: center;
-            background: linear-gradient(135deg, #589ecc 0%, #87CEEB 100%);
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-
-        .cta-button {
-            background-color: #FFD700;
-            color: black;
-            padding: 15px 30px;
-            font-size: 20px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Content Section */
-        .content {
-            max-width: 800px;
-            margin: 40px auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: justify;
-            color: black;
-        }
-
-        h2 {
-            color: white;
-            margin-top: 20px;
-            font-size: 2em;
-        }
-
-        /* Animated Bubbles */
-        .bubble-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .bubble {
-            position: absolute;
-            bottom: -50px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            animation: rise 20s infinite linear;
-        }
-
-        @keyframes rise {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-1000px) scale(1.5);
-                opacity: 0;
-            }
-        }
-
-        /* Footer */
-        .footer {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .footer img {
-            width: 40px;
-            height: 40px;
-            transition: transform 0.3s;
-        }
-
-        .footer img:hover {
-            transform: scale(1.2);
-        }
-
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2em;
-            }
-            
-            .cta-button {
-                padding: 10px 20px;
-                font-size: 16px;
-            }
-
-            .content {
-                width: 90%;
-                font-size: 18px;
-            }
-
-            .footer img {
-                width: 30px;
-                height: 30px;
-            }
-        }
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
+        h1 { color: #333; }
+        .container { max-width: 800px; margin: auto; }
+        .button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        .button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
-
-    <!-- Header -->
-    <header class="header">
-        <h1>$FRIEDRICH Coin</h1>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Welcome to $FRIEDRICH</h1>
-        <p>The first Solana memecoin inspired by Germany’s new Chancellor!</p>
-        <a href="https://drive.google.com/file/d/11n-hTR9aN8EBzxpUu1w0vPxZrMLV9oYN/view?usp=drivesdk" 
-           target="_blank" 
-           class="cta-button">📄 View Whitepaper</a>
-
-        <!-- Animated Bubbles -->
-        <div class="bubble-container">
-            <div class="bubble" style="width: 80px; left: 10%; animation-duration: 15s;"></div>
-            <div class="bubble" style="width: 100px; left: 30%; animation-duration: 20s;"></div>
-            <div class="bubble" style="width: 60px; left: 70%; animation-duration: 18s;"></div>
-            <div class="bubble" style="width: 90px; left: 85%; animation-duration: 22s;"></div>
-            <div class="bubble" style="width: 50px; left: 50%; animation-duration: 16s;"></div>
-        </div>
-    </section>
-
-    <!-- Content Section -->
-    <section class="content">
-        <h2>🔥 This is $FRIEDRICH</h2>
-        <p>The O.G. Solana Token dedicated to Germany’s newly elected Chancellor, Friedrich. It's a fun, community-driven project with no political ambitions, focusing purely on humor and respectful satire.</p>
-    </section>
-
-    <!-- Footer with Social Media Links -->
-    <div class="footer">
-        <a href="https://dexscreener.com/solana/a5l92fexqncrytaoch2zpqub5vldtnn6jha5cvad5whj" target="_blank">
-            <img src="https://imgur.com/jsB72Q8.jpeg" alt="DEXScreener">
-        </a>
-        <a href="https://x.com/friedrichonsol" target="_blank">
-            <img src="https://i.imgur.com/sY3vPnC.jpeg" alt="Twitter">
-        </a>
-        <a href="https://t.me/friedrichmerzz" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Telegram_2019_Logo.svg" alt="Telegram">
-        </a>
-        <a href="https://www.facebook.com/profile.php?id=61572844793604" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
-        </a>
+    <div class="container">
+        <h1>SolSniper Bot</h1>
+        <p>Automatischer Meme-Coin Sniper-Bot für Pump.fun und Raydium.</p>
+        <button class="button" onclick="alert('Funktion noch in Entwicklung!')">Sniper starten</button>
     </div>
-
 </body>
 </html>
