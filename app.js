@@ -12,16 +12,17 @@ const connection = new solanaWeb3.Connection(
 document.getElementById('connectPhantomButton').addEventListener('click', async () => {
     if (window.solana && window.solana.isPhantom) {
         try {
-            const response = await window.solana.connect();
+            const response = await window.solana.connect({ onlyIfTrusted: false });
             walletAddress = response.publicKey.toString();
             walletProvider = window.solana;
             document.getElementById('walletAddress').textContent = `Phantom Wallet verbunden: ${walletAddress}`;
             console.log('Phantom Wallet verbunden:', walletAddress);
         } catch (err) {
             console.error('Verbindung mit Phantom Wallet fehlgeschlagen:', err);
+            alert('Verbindung mit Phantom Wallet fehlgeschlagen.');
         }
     } else {
-        alert('Bitte installiere das Phantom Wallet!');
+        alert('Bitte installiere das Phantom Wallet über https://phantom.app');
     }
 });
 
@@ -36,13 +37,14 @@ document.getElementById('connectSolflareButton').addEventListener('click', async
             console.log('Solflare Wallet verbunden:', walletAddress);
         } catch (err) {
             console.error('Verbindung mit Solflare Wallet fehlgeschlagen:', err);
+            alert('Verbindung mit Solflare Wallet fehlgeschlagen.');
         }
     } else {
-        alert('Bitte installiere das Solflare Wallet!');
+        alert('Bitte installiere das Solflare Wallet über https://solflare.com');
     }
 });
 
-// Sniper-Bot-Funktion zum Snipen von Token
+// Funktion zum Testen der Sniping-Funktion (einfacher Test)
 async function executeSniping() {
     if (!walletAddress || !walletProvider) {
         alert('Bitte verbinde zuerst dein Wallet!');
@@ -53,22 +55,12 @@ async function executeSniping() {
     document.getElementById('status').textContent = 'Starte Sniping...';
 
     try {
-        const transaction = new solanaWeb3.Transaction();
+        // Beispiel: Guthaben abfragen (einfache Testfunktion)
+        const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
+        const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
 
-        // Beispiel: Transaktionsanweisung (Pseudocode)
-        const instruction = solanaWeb3.SystemProgram.transfer({
-            fromPubkey: new solanaWeb3.PublicKey(walletAddress),
-            toPubkey: new solanaWeb3.PublicKey(walletAddress), // Beispiel: Dummy-Zieladresse
-            lamports: 1000, // Beispiel: 1000 Lamports senden
-        });
-
-        transaction.add(instruction);
-
-        const { signature } = await walletProvider.signAndSendTransaction(transaction);
-        await connection.confirmTransaction(signature);
-
-        console.log('Transaktion erfolgreich:', signature);
-        document.getElementById('status').textContent = 'Sniping erfolgreich!';
+        document.getElementById('status').textContent = `Sniping erfolgreich! Dein Guthaben: ${solBalance.toFixed(4)} SOL`;
+        console.log('Guthaben:', solBalance, 'SOL');
     } catch (error) {
         console.error('Fehler beim Snipen:', error);
         document.getElementById('status').textContent = 'Fehler beim Snipen!';
@@ -78,4 +70,19 @@ async function executeSniping() {
 // Button zum Snipen
 document.getElementById('snipeButton').addEventListener('click', () => {
     executeSniping();
+});
+
+// Automatische Erkennung von installierten Wallets beim Laden der Seite
+window.addEventListener('load', () => {
+    if (window.solana && window.solana.isPhantom) {
+        console.log('Phantom Wallet erkannt!');
+    } else {
+        console.warn('Kein Phantom Wallet gefunden.');
+    }
+
+    if (window.solflare) {
+        console.log('Solflare Wallet erkannt!');
+    } else {
+        console.warn('Kein Solflare Wallet gefunden.');
+    }
 });
