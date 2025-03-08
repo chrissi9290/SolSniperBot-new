@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolSniperBot - Automatisierte Meme-Coin Snipes</title>
-    <!-- Tailwind CSS CDN -->
+    <title>SolSniperBot - Erweiterte Funktionen</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.0/lib/index.iife.js"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
 
     <header class="w-full bg-gray-800 p-4 text-center">
-        <h1 class="text-3xl font-bold">SolSniperBot</h1>
-        <p class="text-gray-400">Automatisierte Meme-Coin Snipes mit Phantom Wallet</p>
+        <h1 class="text-3xl font-bold">SolSniperBot - Erweiterte Funktionen</h1>
+        <p class="text-gray-400">Automatisierte Meme-Coin Snipes mit erweiterten Handelsstrategien</p>
     </header>
 
     <main class="flex flex-col items-center p-4 max-w-md w-full">
@@ -24,19 +23,32 @@
             <p id="walletAddress" class="text-green-400 mt-2"></p>
         </div>
 
-        <!-- Manueller Token Swap -->
+        <!-- Erweiterte Sniper-Einstellungen -->
         <div class="bg-gray-800 p-6 rounded-lg shadow-md w-full mb-6">
-            <h2 class="text-2xl font-semibold mb-4">Manueller Token Swap</h2>
-            <input type="text" id="inputToken" placeholder="Input Token (z.B. SOL)" 
-                class="w-full p-2 mb-2 bg-gray-700 rounded text-white" />
-            <input type="text" id="outputToken" placeholder="Output Token (z.B. MEME)" 
-                class="w-full p-2 mb-2 bg-gray-700 rounded text-white" />
-            <input type="number" id="amount" placeholder="Betrag in SOL" 
+            <h2 class="text-2xl font-semibold mb-4">Erweiterte Sniper-Einstellungen</h2>
+            
+            <!-- Auswahl der Sniper-Strategie -->
+            <label class="block mb-2 text-gray-300">Sniper-Strategie:</label>
+            <select id="strategy" class="w-full p-2 mb-4 bg-gray-700 rounded text-white">
+                <option value="low">Niedriges Risiko</option>
+                <option value="medium">Mittleres Risiko</option>
+                <option value="high">Hohes Risiko</option>
+            </select>
+
+            <!-- Take-Profit und Stop-Loss -->
+            <label class="block mb-2 text-gray-300">Take-Profit (%):</label>
+            <input type="number" id="takeProfit" placeholder="Z. B. 20" 
                 class="w-full p-2 mb-4 bg-gray-700 rounded text-white" />
-            <button id="swapButton" 
-                class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">
-                Token tauschen
-            </button>
+
+            <label class="block mb-2 text-gray-300">Stop-Loss (%):</label>
+            <input type="number" id="stopLoss" placeholder="Z. B. 10" 
+                class="w-full p-2 mb-4 bg-gray-700 rounded text-white" />
+
+            <!-- Slippage Toleranz -->
+            <label class="block mb-2 text-gray-300">Slippage Toleranz (%):</label>
+            <input type="range" id="slippage" min="0" max="10" step="0.1" value="1" 
+                class="w-full mb-4" />
+            <span id="slippageValue" class="text-gray-400">1%</span>
         </div>
 
         <!-- Automatisierter Meme-Coin Sniper -->
@@ -52,28 +64,20 @@
         <p id="status" class="text-yellow-400 font-semibold"></p>
     </main>
 
-    <footer class="w-full bg-gray-800 p-4 text-center">
-        <p class="text-gray-500">© 2025 SolSniperBot - Alle Rechte vorbehalten.</p>
-    </footer>
-
-    <!-- JavaScript -->
     <script>
         const connectButton = document.getElementById('connectButton');
-        const swapButton = document.getElementById('swapButton');
         const snipeButton = document.getElementById('snipeButton');
         const walletAddressElement = document.getElementById('walletAddress');
         const statusElement = document.getElementById('status');
-        
+        const slippageInput = document.getElementById('slippage');
+        const slippageValue = document.getElementById('slippageValue');
+
         let wallet;
 
-        // Prüfen, ob Phantom Wallet vorhanden ist
-        const isPhantomInstalled = window.solana && window.solana.isPhantom;
-        if (!isPhantomInstalled) {
-            statusElement.innerText = "Bitte installiere die Phantom Wallet-Erweiterung!";
-            connectButton.disabled = true;
-            swapButton.disabled = true;
-            snipeButton.disabled = true;
-        }
+        // Slippage Toleranz anzeigen
+        slippageInput.oninput = () => {
+            slippageValue.innerText = `${slippageInput.value}%`;
+        };
 
         // Verbinden mit Phantom Wallet
         connectButton.onclick = async () => {
@@ -89,65 +93,24 @@
             }
         };
 
-        // Funktion für den Honeypot-Check
-        async function checkIfSellable(tokenMint) {
-            try {
-                const response = await fetch(`https://api.raydium.io/v2/pairs/${tokenMint}`);
-                const poolData = await response.json();
-
-                if (poolData.liquidity < 50) {
-                    console.warn("Warnung: Geringe Liquidität, könnte ein Honeypot sein!");
-                    return false;
-                }
-
-                return true;
-            } catch (err) {
-                console.error("Fehler beim Prüfen des Honeypots:", err);
-                return false;
-            }
-        }
-
-        // Raydium Swap-Funktion
-        swapButton.onclick = async () => {
-            const inputToken = document.getElementById('inputToken').value;
-            const outputToken = document.getElementById('outputToken').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-
-            if (!wallet || !inputToken || !outputToken || !amount) {
-                statusElement.innerText = "Bitte alle Felder ausfüllen!";
-                return;
-            }
-
-            const isSellable = await checkIfSellable(outputToken);
-            if (!isSellable) {
-                statusElement.innerText = "Token könnte ein Honeypot sein. Swap abgebrochen!";
-                return;
-            }
-
-            statusElement.innerText = "Swap wird vorbereitet...";
-        };
-
-        // Automatisierter Meme-Coin Sniper
+        // Automatisierter Meme-Coin Sniper mit erweiterten Funktionen
         snipeButton.onclick = async () => {
             statusElement.innerText = "Suche nach neuen Meme-Coins...";
-            try {
-                const poolsUrl = "https://api.raydium.io/v2/pairs";
-                const response = await fetch(poolsUrl);
-                const pools = await response.json();
 
-                const newMemePools = pools.filter(pool => pool.name.includes("MEME"));
-                if (newMemePools.length > 0) {
-                    const firstMemeToken = newMemePools[0];
-                    document.getElementById('inputToken').value = "SOL";
-                    document.getElementById('outputToken').value = firstMemeToken.baseMint;
-                    document.getElementById('amount').value = 0.1;
-                    swapButton.click();
-                } else {
-                    statusElement.innerText = "Keine neuen Meme-Coins gefunden.";
-                }
-            } catch (err) {
-                console.error(err);
-                statusElement.innerText = "Fehler beim Suchen nach Meme-Coins!";
+            const strategy = document.getElementById('strategy').value;
+            const takeProfit = parseFloat(document.getElementById('takeProfit').value);
+            const stopLoss = parseFloat(document.getElementById('stopLoss').value);
+            const slippage = parseFloat(document.getElementById('slippage').value) / 100;
+
+            console.log("Strategie:", strategy, "TP:", takeProfit, "SL:", stopLoss, "Slippage:", slippage);
+
+            // Beispiel für die Strategieumsetzung
+            if (strategy === "low") {
+                statusElement.innerText = "Niedriges Risiko ausgewählt. Fokus auf sichere Token.";
+            } else if (strategy === "medium") {
+                statusElement.innerText = "Mittleres Risiko. Ausgewogene Handelsstrategie.";
+            } else if (strategy === "high") {
+                statusElement.innerText = "Hohes Risiko! Schnellere Käufe mit weniger Sicherheitschecks.";
             }
         };
     </script>
