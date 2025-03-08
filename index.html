@@ -14,6 +14,7 @@
         input[type="number"], select { width: 100%; padding: 10px; margin-top: 5px; }
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
+        #walletAddress { word-wrap: break-word; }
     </style>
 </head>
 <body>
@@ -43,10 +44,26 @@
             <h2>Wallet-Verbindung</h2>
             <button onclick="connectWallet()">Wallet verbinden</button>
             <p id="walletStatus">Keine Wallet verbunden</p>
+            <p id="walletAddress"></p>
         </div>
     </div>
 
     <script>
+        async function connectWallet() {
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    const response = await window.solana.connect();
+                    const address = response.publicKey.toString();
+                    document.getElementById('walletStatus').innerText = 'Wallet verbunden';
+                    document.getElementById('walletAddress').innerText = `Adresse: ${address}`;
+                } catch (err) {
+                    console.error('Wallet Verbindung fehlgeschlagen:', err);
+                }
+            } else {
+                alert('Phantom Wallet nicht gefunden! Bitte installiere die Phantom Wallet.');
+            }
+        }
+
         function startSniping() {
             const solAmount = document.getElementById('solAmount').value;
             const slippage = document.getElementById('slippage').value;
@@ -54,10 +71,6 @@
             const takeProfit = document.getElementById('takeProfit').value;
             
             alert(`Sniping gestartet!\nSOL: ${solAmount}\nSlippage: ${slippage}%\nStop-Loss: ${stopLoss}%\nTake-Profit: ${takeProfit}%`);
-        }
-
-        function connectWallet() {
-            document.getElementById('walletStatus').innerText = 'Wallet verbunden (Demo)';
         }
     </script>
 </body>
