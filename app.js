@@ -9,11 +9,15 @@ const USDC_MINT = "Es9vMFrzaCER61Z9z5Jx2qb3pJBqumJp2q8wkAJjF7N9";
 // HTML-Elemente
 const connectWalletBtn = document.getElementById('connectWalletBtn');
 const walletAddressDisplay = document.getElementById('walletAddress');
+const walletBalanceDisplay = document.getElementById('walletBalance');
 const logsDiv = document.getElementById('logs');
 
 let provider = null;
 let tradingInterval = null;
 let snipingInterval = null;
+
+// Verbindung zum Solana-Netzwerk herstellen
+const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
 
 // Wallet-Verbindung herstellen
 connectWalletBtn.addEventListener('click', async () => {
@@ -26,10 +30,24 @@ connectWalletBtn.addEventListener('click', async () => {
         const resp = await provider.connect();
         walletAddressDisplay.textContent = `Verbunden: ${resp.publicKey.toString()}`;
         logMessage(`Wallet verbunden: ${resp.publicKey.toString()}`);
+        await updateWalletBalance(resp.publicKey);
     } catch (err) {
         logMessage('Wallet-Verbindung abgelehnt.');
     }
 });
+
+// Wallet-Balance abrufen und anzeigen
+async function updateWalletBalance(publicKey) {
+    try {
+        const balance = await connection.getBalance(publicKey);
+        const solBalance = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
+        walletBalanceDisplay.textContent = `Balance: ${solBalance} SOL`;
+        logMessage(`Aktuelle Wallet-Balance: ${solBalance} SOL`);
+    } catch (err) {
+        logMessage('Fehler beim Abrufen der Wallet-Balance.');
+        console.error(err);
+    }
+}
 
 // Logs anzeigen
 function logMessage(message) {
