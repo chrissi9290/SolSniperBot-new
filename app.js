@@ -16,6 +16,7 @@ document.getElementById('connectPhantomButton').addEventListener('click', async 
             walletAddress = response.publicKey.toString();
             walletProvider = window.solana;
             document.getElementById('walletAddress').textContent = `Phantom Wallet verbunden: ${walletAddress}`;
+            document.getElementById('snipeButton').disabled = false;
             console.log('Phantom Wallet verbunden:', walletAddress);
         } catch (err) {
             console.error('Verbindung mit Phantom Wallet fehlgeschlagen:', err);
@@ -34,6 +35,7 @@ document.getElementById('connectSolflareButton').addEventListener('click', async
             walletAddress = window.solflare.publicKey.toString();
             walletProvider = window.solflare;
             document.getElementById('walletAddress').textContent = `Solflare Wallet verbunden: ${walletAddress}`;
+            document.getElementById('snipeButton').disabled = false;
             console.log('Solflare Wallet verbunden:', walletAddress);
         } catch (err) {
             console.error('Verbindung mit Solflare Wallet fehlgeschlagen:', err);
@@ -44,7 +46,7 @@ document.getElementById('connectSolflareButton').addEventListener('click', async
     }
 });
 
-// Funktion zum Testen der Sniping-Funktion (einfacher Test)
+// Funktion zum Testen der Sniping-Funktion
 async function executeSniping() {
     if (!walletAddress || !walletProvider) {
         alert('Bitte verbinde zuerst dein Wallet!');
@@ -55,7 +57,6 @@ async function executeSniping() {
     document.getElementById('status').textContent = 'Starte Sniping...';
 
     try {
-        // Beispiel: Guthaben abfragen (einfache Testfunktion)
         const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
         const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
 
@@ -72,8 +73,10 @@ document.getElementById('snipeButton').addEventListener('click', () => {
     executeSniping();
 });
 
-// Automatische Erkennung von installierten Wallets beim Laden der Seite
+// Automatische Erkennung der Wallets beim Laden der Seite
 window.addEventListener('load', () => {
+    console.clear();
+
     if (window.solana && window.solana.isPhantom) {
         console.log('Phantom Wallet erkannt!');
     } else {
