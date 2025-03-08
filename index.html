@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$FRIEDRICH Coin</title>
+    <title>Friedrich Coin</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -15,115 +15,75 @@
             overflow-x: hidden;
         }
 
-        /* Header */
-        .site-header {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
+        /* Modern Header */
+        .header {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
             position: fixed;
             width: 100%;
-            z-index: 100;
-            top: 0;
-            left: 0;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .nav-menu {
-            list-style: none;
-            display: flex;
-            gap: 20px;
+        .header h1 {
+            font-size: 2em;
             margin: 0;
-        }
-
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            color: #FFD700;
-        }
-
-        /* Mobile Navigation */
-        .menu-toggle {
-            display: none;
-            font-size: 24px;
-            color: white;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-                flex-direction: column;
-                gap: 10px;
-                background-color: rgba(0, 0, 0, 0.8);
-                position: absolute;
-                top: 60px;
-                right: 20px;
-                padding: 20px;
-                border-radius: 10px;
-            }
-
-            .nav-menu.open {
-                display: flex;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
         }
 
         /* Hero Section */
         .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
             text-align: center;
-            padding: 150px 20px 50px;
+            background: linear-gradient(135deg, #589ecc 0%, #87CEEB 100%);
             position: relative;
-            background-color: #589ecc;
-            overflow: hidden;
-            min-height: 100vh;
         }
 
         .hero h1 {
             font-size: 3em;
-            margin: 0.5em 0;
+            margin-bottom: 20px;
         }
 
         .cta-button {
-            display: inline-block;
-            padding: 15px 30px;
             background-color: #FFD700;
             color: black;
+            padding: 15px 30px;
             font-size: 20px;
-            font-weight: bold;
             border-radius: 10px;
-            text-decoration: none;
+            border: none;
+            cursor: pointer;
             margin-top: 20px;
-            transition: transform 0.2s, background 0.3s;
+            transition: all 0.3s;
         }
 
         .cta-button:hover {
-            transform: scale(1.1);
-            background: linear-gradient(45deg, #FFA500, #FFD700);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
-        /* Bubble Animation */
+        /* Content Section */
+        .content {
+            max-width: 800px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: justify;
+            color: black;
+        }
+
+        h2 {
+            color: white;
+            margin-top: 20px;
+            font-size: 2em;
+        }
+
+        /* Animated Bubbles */
         .bubble-container {
             position: absolute;
             top: 0;
@@ -131,66 +91,59 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            overflow: hidden;
         }
 
         .bubble {
             position: absolute;
             bottom: -50px;
+            background-color: rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.5);
             animation: rise 20s infinite linear;
-            opacity: 0.6;
         }
 
         @keyframes rise {
             0% {
                 transform: translateY(0) scale(1);
+                opacity: 1;
             }
             100% {
                 transform: translateY(-1000px) scale(1.5);
+                opacity: 0;
             }
         }
 
-        /* Content */
-        .content {
-            max-width: 800px;
-            margin: 20px auto;
-            background: #87CEEB;
+        /* Footer */
+        .footer {
+            background-color: rgba(0, 0, 0, 0.6);
             padding: 20px;
-            border-radius: 10px;
-            text-align: justify;
-            color: black;
-        }
-
-        h2 {
-            color: white;
-            margin-top: 40px;
-        }
-
-        /* Footer Logos */
-        .logo-container {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
             display: flex;
             justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            flex-wrap: wrap;
+            gap: 20px;
         }
 
-        .logo-container img {
+        .footer img {
             width: 40px;
             height: 40px;
+            transition: transform 0.3s;
         }
 
-        /* Mobile Optimierung */
+        .footer img:hover {
+            transform: scale(1.2);
+        }
+
+        /* Mobile Styles */
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2em;
             }
             
             .cta-button {
-                font-size: 18px;
                 padding: 10px 20px;
+                font-size: 16px;
             }
 
             .content {
@@ -198,7 +151,7 @@
                 font-size: 18px;
             }
 
-            .logo-container img {
+            .footer img {
                 width: 30px;
                 height: 30px;
             }
@@ -208,23 +161,19 @@
 <body>
 
     <!-- Header -->
-    <header class="site-header">
-        <nav class="navbar">
-            <div class="logo">$FRIEDRICH</div>
-            <ul class="nav-menu">
-                <li><a href="#about">About</a></li>
-                <li><a href="#tokenomics">Tokenomics</a></li>
-                <li><a href="#whitepaper">Whitepaper</a></li>
-            </ul>
-            <button class="menu-toggle" aria-label="Menu">&#9776;</button>
-        </nav>
+    <header class="header">
+        <h1>$FRIEDRICH Coin</h1>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
         <h1>Welcome to $FRIEDRICH</h1>
-        <p class="subtitle">The first Solana memecoin inspired by Germany’s new Chancellor!</p>
-        <a href="#whitepaper" class="cta-button">View Whitepaper</a>
+        <p>The first Solana memecoin inspired by Germany’s new Chancellor!</p>
+        <a href="https://drive.google.com/file/d/11n-hTR9aN8EBzxpUu1w0vPxZrMLV9oYN/view?usp=drivesdk" 
+           target="_blank" 
+           class="cta-button">📄 View Whitepaper</a>
+
+        <!-- Animated Bubbles -->
         <div class="bubble-container">
             <div class="bubble" style="width: 80px; left: 10%; animation-duration: 15s;"></div>
             <div class="bubble" style="width: 100px; left: 30%; animation-duration: 20s;"></div>
@@ -234,39 +183,27 @@
         </div>
     </section>
 
-    <!-- Content Sections -->
-    <section id="about" class="content">
+    <!-- Content Section -->
+    <section class="content">
         <h2>🔥 This is $FRIEDRICH</h2>
-        <p>The O.G. Solana Token dedicated to Germany’s newly elected Chancellor, Friedrich.</p>
-    </section>
-
-    <section id="tokenomics" class="content">
-        <h2>💰 Supply & Distribution</h2>
-        <p>Total Supply: 1,000,000,000 $FRIEDRICH</p>
-    </section>
-
-    <section id="whitepaper" class="content">
-        <h2>📄 Whitepaper</h2>
-        <a href="https://drive.google.com/file/d/11n-hTR9aN8EBzxpUu1w0vPxZrMLV9oYN/view?usp=drivesdk" 
-           target="_blank" 
-           class="cta-button">📄 View Whitepaper</a>
+        <p>The O.G. Solana Token dedicated to Germany’s newly elected Chancellor, Friedrich. It's a fun, community-driven project with no political ambitions, focusing purely on humor and respectful satire.</p>
     </section>
 
     <!-- Footer with Social Media Links -->
-    <div class="logo-container">
-        <a href="https://dexscreener.com/" target="_blank"><img src="https://imgur.com/jsB72Q8.jpeg"></a>
-        <a href="https://x.com/friedrichonsol" target="_blank"><img src="https://i.imgur.com/sY3vPnC.jpeg"></a>
-        <a href="https://t.me/friedrichmerzz" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Telegram_2019_Logo.svg"></a>
-        <a href="https://www.facebook.com/profile.php?id=61572844793604" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"></a>
+    <div class="footer">
+        <a href="https://dexscreener.com/solana/a5l92fexqncrytaoch2zpqub5vldtnn6jha5cvad5whj" target="_blank">
+            <img src="https://imgur.com/jsB72Q8.jpeg" alt="DEXScreener">
+        </a>
+        <a href="https://x.com/friedrichonsol" target="_blank">
+            <img src="https://i.imgur.com/sY3vPnC.jpeg" alt="Twitter">
+        </a>
+        <a href="https://t.me/friedrichmerzz" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Telegram_2019_Logo.svg" alt="Telegram">
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61572844793604" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+        </a>
     </div>
-
-    <script>
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('open');
-        });
-    </script>
 
 </body>
 </html>
