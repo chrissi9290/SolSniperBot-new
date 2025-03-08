@@ -5,14 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SolSniper Bot</title>
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Solana Web3.js Bibliothek -->
+    <script src="https://unpkg.com/@solana/web3.js@1.73.3/lib/index.umd.min.js"></script>
 </head>
 <body>
     <h1>SolSniper Bot</h1>
     <p>Snipen von Meme Coins auf Pump.fun und Raydium</p>
     
+    <!-- Wallet-Verbindungen -->
+    <button id="connectPhantomButton">Verbinde Phantom Wallet</button>
+    <button id="connectSolflareButton">Verbinde Solflare Wallet</button>
+    
+    <!-- Wallet-Adresse anzeigen -->
+    <div id="walletAddress"></div>
+    
+    <!-- Sniping-Funktion -->
     <button id="snipeButton">Starte Sniping</button>
     <div id="status"></div>
 
+    <!-- JavaScript-Datei -->
     <script src="app.js"></script>
 </body>
 </html>
