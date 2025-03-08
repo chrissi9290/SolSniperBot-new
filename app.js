@@ -1,42 +1,21 @@
-async function connectWallet() {
-    if (window.solana && window.solana.isPhantom) {
-        try {
-            const response = await window.solana.connect();
-            const walletAddress = response.publicKey.toString();
-            document.getElementById('walletStatus').innerText = 'Wallet verbunden: ' + walletAddress;
-            localStorage.setItem('walletAddress', walletAddress);
-            window.location.href = 'dashboard.html';
-        } catch (err) {
-            console.error('Wallet Verbindung fehlgeschlagen:', err);
-        }
-    } else {
-        alert('Phantom Wallet nicht gefunden! Bitte installiere die Phantom Wallet.');
-    }
-}
-
-function logout() {
-    localStorage.removeItem('walletAddress');
-    window.location.href = 'index.html';
-}
+document.getElementById('snipeButton').addEventListener('click', () => {
+    startSniping();
+});
 
 function startSniping() {
-    const solAmount = document.getElementById('solAmount').value;
-    const slippage = document.getElementById('slippage').value;
+    console.log('Starte Sniping...');
+    document.getElementById('status').textContent = 'Starte Sniping...';
 
-    if (!solAmount || !slippage) {
-        alert('Bitte SOL-Betrag und Slippage eingeben.');
-        return;
-    }
+    // Simulierte Sniping-Logik
+    const success = Math.random() > 0.5; // Zufälliger Erfolg (50%)
 
-    document.getElementById('sniperStatus').innerText = 'Sniper-Status: Aktiv';
-    console.log(`Sniping gestartet mit ${solAmount} SOL und ${slippage}% Slippage`);
+    setTimeout(() => {
+        if (success) {
+            console.log('Sniping erfolgreich!');
+            document.getElementById('status').textContent = 'Sniping erfolgreich!';
+        } else {
+            console.log('Sniping fehlgeschlagen.');
+            document.getElementById('status').textContent = 'Sniping fehlgeschlagen.';
+        }
+    }, 2000); // Simulierter Sniping-Prozess (2 Sekunden)
 }
-
-window.onload = () => {
-    const walletAddress = localStorage.getItem('walletAddress');
-    if (!walletAddress && window.location.pathname !== '/index.html') {
-        window.location.href = 'index.html';
-    } else if (walletAddress && window.location.pathname === '/dashboard.html') {
-        document.getElementById('walletAddress').innerText = 'Verbunden mit: ' + walletAddress;
-    }
-};
