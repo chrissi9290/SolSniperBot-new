@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolSniper Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>SolSniper Bot Dashboard</h1>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Willkommen im Dashboard</h2>
+            <p>Deine Wallet-Adresse wird hier angezeigt.</p>
+            <button onclick="logout()">Abmelden</button>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
