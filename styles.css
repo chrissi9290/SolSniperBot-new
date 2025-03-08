@@ -30,12 +30,6 @@ section {
     padding: 20px;
 }
 
-input[type="number"] {
-    width: 100px;
-    padding: 5px;
-    margin: 10px 0;
-}
-
 .logs {
     background-color: #e0e0e0;
     padding: 10px;
