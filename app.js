@@ -15,7 +15,7 @@ let balanceInterval = null;
 connectWalletBtn.addEventListener('click', async () => {
     provider = window.phantom?.solana;
     if (!provider?.isPhantom) {
-        logMessage('Phantom Wallet nicht gefunden!');
+        logMessage('Phantom Wallet nicht gefunden!', true);
         return;
     }
 
@@ -24,7 +24,7 @@ connectWalletBtn.addEventListener('click', async () => {
         publicKey = resp.publicKey;
 
         if (!publicKey) {
-            logMessage('Kein Public Key von der Wallet erhalten.');
+            logMessage('Kein Public Key von der Wallet erhalten.', true);
             return;
         }
 
@@ -36,7 +36,7 @@ connectWalletBtn.addEventListener('click', async () => {
         if (balanceInterval) clearInterval(balanceInterval);
         balanceInterval = setInterval(updateWalletBalance, 30000);
     } catch (err) {
-        logMessage(`Fehler bei Wallet-Verbindung: ${err.message}`);
+        logMessage(`Fehler bei Wallet-Verbindung: ${err.message}`, true);
         console.error(err);
     }
 });
@@ -44,7 +44,7 @@ connectWalletBtn.addEventListener('click', async () => {
 // Wallet-Balance abrufen und anzeigen
 async function updateWalletBalance() {
     if (!publicKey) {
-        logMessage('Kein Wallet verbunden. Kann Balance nicht abrufen.');
+        logMessage('Kein Wallet verbunden. Kann Balance nicht abrufen.', true);
         return;
     }
     try {
@@ -52,7 +52,7 @@ async function updateWalletBalance() {
         const balance = await connection.getBalance(publicKey);
 
         if (balance === null) {
-            logMessage('Balance konnte nicht abgerufen werden (null zurückgegeben).');
+            logMessage('Balance konnte nicht abgerufen werden (null zurückgegeben).', true);
             return;
         }
 
@@ -60,14 +60,16 @@ async function updateWalletBalance() {
         walletBalanceDisplay.textContent = `Balance: ${solBalance} SOL`;
         logMessage(`Aktuelle Wallet-Balance: ${solBalance} SOL`);
     } catch (err) {
-        logMessage(`Fehler beim Abrufen der Wallet-Balance: ${err.message}`);
+        logMessage(`Fehler beim Abrufen der Wallet-Balance: ${err.message}`, true);
         console.error(err);
     }
 }
 
-// Logs anzeigen
-function logMessage(message) {
+// Logs anzeigen (Fehler rot darstellen)
+function logMessage(message, isError = false) {
     const timestamp = new Date().toLocaleTimeString();
-    logsDiv.innerHTML += `<p>[${timestamp}] ${message}</p>`;
-    logsDiv.scrollTop = logsDiv.scrollHeight;
+    const logEntry = document.createElement('p');
+    logEntry.textContent = `[${timestamp}] ${message}`;
+    if (isError) logEntry.classList.add('log-error');
+    logsDiv.appendChild(logEntry);
 }
