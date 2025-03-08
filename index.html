@@ -3,20 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolSniper Bot</title>
+    <title>SolSniper Bot Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
-        h1 { color: #333; }
-        .container { max-width: 800px; margin: auto; }
-        .button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-        .button:hover { background-color: #0056b3; }
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 10px 0; text-align: center; }
+        h1 { margin: 0; }
+        .container { max-width: 800px; margin: 20px auto; }
+        .card { background: white; padding: 20px; margin: 10px 0; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        label { display: block; margin-top: 10px; }
+        input[type="number"], select { width: 100%; padding: 10px; margin-top: 5px; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px; }
+        button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
+    <header>
+        <h1>SolSniper Bot Dashboard</h1>
+    </header>
+
     <div class="container">
-        <h1>SolSniper Bot</h1>
-        <p>Automatischer Meme-Coin Sniper-Bot für Pump.fun und Raydium.</p>
-        <button class="button" onclick="alert('Funktion noch in Entwicklung!')">Sniper starten</button>
+        <div class="card">
+            <h2>Sniping Einstellungen</h2>
+            <label for="solAmount">SOL-Betrag für Sniping:</label>
+            <input type="number" id="solAmount" placeholder="Menge in SOL" min="0.1" step="0.1">
+            
+            <label for="slippage">Maximale Slippage (%):</label>
+            <input type="number" id="slippage" placeholder="Slippage z. B. 1.0" min="0" step="0.1">
+            
+            <label for="stopLoss">Stop-Loss (%):</label>
+            <input type="number" id="stopLoss" placeholder="Stop-Loss z. B. -10" min="-100" max="0" step="1">
+            
+            <label for="takeProfit">Take-Profit (%):</label>
+            <input type="number" id="takeProfit" placeholder="Take-Profit z. B. 50" min="0" step="1">
+            
+            <button onclick="startSniping()">Sniper starten</button>
+        </div>
+        
+        <div class="card">
+            <h2>Wallet-Verbindung</h2>
+            <button onclick="connectWallet()">Wallet verbinden</button>
+            <p id="walletStatus">Keine Wallet verbunden</p>
+        </div>
     </div>
+
+    <script>
+        function startSniping() {
+            const solAmount = document.getElementById('solAmount').value;
+            const slippage = document.getElementById('slippage').value;
+            const stopLoss = document.getElementById('stopLoss').value;
+            const takeProfit = document.getElementById('takeProfit').value;
+            
+            alert(`Sniping gestartet!\nSOL: ${solAmount}\nSlippage: ${slippage}%\nStop-Loss: ${stopLoss}%\nTake-Profit: ${takeProfit}%`);
+        }
+
+        function connectWallet() {
+            document.getElementById('walletStatus').innerText = 'Wallet verbunden (Demo)';
+        }
+    </script>
 </body>
 </html>
