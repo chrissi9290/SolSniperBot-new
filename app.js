@@ -10,8 +10,8 @@ const connectWalletBtn = document.getElementById('connectWalletBtn');
 const walletAddressDisplay = document.getElementById('walletAddress');
 const logsDiv = document.getElementById('logs');
 
-// Wallet Provider
 let provider = null;
+let tradingInterval = null;
 
 // Wallet-Verbindung herstellen
 connectWalletBtn.addEventListener('click', async () => {
@@ -36,54 +36,38 @@ function logMessage(message) {
     logsDiv.scrollTop = logsDiv.scrollHeight;
 }
 
-// Automatisiertes Trading starten
+// Automatisiertes Trading (TP/SL)
 document.getElementById('startTradingBtn').addEventListener('click', () => {
-    const tp = document.getElementById('tp').value;
-    const sl = document.getElementById('sl').value;
-    logMessage(`Trading gestartet: TP=${tp}, SL=${sl}`);
-});
-
-// Sniping Funktion
-document.getElementById('startSnipingBtn').addEventListener('click', () => {
-    logMessage('Sniping-Funktion aktiviert!');
-});
-
-// Kaufen-Button Funktion
-document.getElementById('buyTokenBtn').addEventListener('click', async () => {
-    const amount = document.getElementById('buyAmount').value;
-    if (!amount || !provider) {
-        logMessage('Bitte Wallet verbinden und Menge eingeben.');
+    const tp = parseFloat(document.getElementById('tp').value);
+    const sl = parseFloat(document.getElementById('sl').value);
+    if (isNaN(tp) || isNaN(sl)) {
+        logMessage('Bitte gültige TP und SL Werte eingeben.');
         return;
     }
-    logMessage(`Starte Kauf von ${amount} SOL...`);
+
+    logMessage(`Automatisches Trading gestartet: TP=${tp} SOL, SL=${sl} SOL`);
     
-    try {
-        const quoteUrl = `${RAYDIUM_API}/compute/swap-base-in?inputMint=${SOL_MINT}&outputMint=${USDC_MINT}&amount=${amount * 1e9}&slippageBps=100&txVersion=V0`;
-        const res = await fetch(quoteUrl);
-        const { data: swapResponse } = await res.json();
-        
-        const txUrl = `${RAYDIUM_API}/transaction/swap-base-in`;
-        const txRes = await fetch(txUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                swapResponse,
-                txVersion: 'V0',
-                wallet: provider.publicKey.toString(),
-                wrapSol: false,
-                unwrapSol: false
-            })
-        });
-        
-        const txData = await txRes.json();
-        const transactionBase64 = txData.data[0].transaction;
-        
-        const transaction = solanaWeb3.Transaction.from(Buffer.from(transactionBase64, 'base64'));
-        const { signature } = await provider.signAndSendTransaction(transaction);
-        
-        logMessage(`Token-Kauf abgeschlossen. TX: ${signature}`);
-    } catch (err) {
-        logMessage('Fehler beim Kauf: ' + err.message);
-        console.error(err);
-    }
+    tradingInterval = setInterval(async () => {
+        const currentPrice = await fetchCurrentPrice(SOL_MINT, USDC_MINT);
+        logMessage(`Aktueller Preis: ${currentPrice} SOL`);
+
+        if (currentPrice >= tp) {
+            logMessage(`Take Profit erreicht! Verkaufe...`);
+            clearInterval(tradingInterval);
+        } else if (currentPrice <= sl) {
+            logMessage(`Stop Loss erreicht! Verkaufe...`);
+            clearInterval(tradingInterval);
+        }
+    }, 5000); // Preis alle 5 Sekunden prüfen
 });
+
+document.getElementById('stopTradingBtn').addEventListener('click', () => {
+    clearInterval(tradingInterval);
+    logMessage('Automatisches Trading gestoppt.');
+});
+
+// Simulierter Preisabruf (Hier sollte später die API-Abfrage hin)
+async function fetchCurrentPrice(inputMint, outputMint) {
+    // Simulierter Preis (Zufallswert zur Demonstration)
+    return (Math.random() * (2.5 - 0.5) + 0.5).toFixed(2);
+}
