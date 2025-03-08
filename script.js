@@ -1,5 +1,6 @@
 // Prüfen, ob Phantom verfügbar ist
 async function connectWallet() {
+    console.log("Button geklickt!"); // Test, ob der Button funktioniert
     if (window.solana && window.solana.isPhantom) {
         try {
             const response = await window.solana.connect();
@@ -11,6 +12,7 @@ async function connectWallet() {
         }
     } else {
         alert("Bitte installiere die Phantom-Wallet-Erweiterung!");
+        console.log("Phantom nicht gefunden");
     }
 }
 
