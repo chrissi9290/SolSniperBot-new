@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolSniperBot</title>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.0/lib/index.iife.js"></script>
+</head>
+<body>
+    <h1>SolSniperBot - Verbinde deine Phantom Wallet</h1>
+    <button id="connectButton">Phantom Wallet verbinden</button>
+    <p id="walletAddress"></p>
+    <p id="status"></p>
+
+    <script>
+        const connectButton = document.getElementById('connectButton');
+        const walletAddressElement = document.getElementById('walletAddress');
+        const statusElement = document.getElementById('status');
+
+        // Prüfen, ob Phantom Wallet vorhanden ist
+        const isPhantomInstalled = window.solana && window.solana.isPhantom;
+        if (!isPhantomInstalled) {
+            statusElement.innerText = "Bitte installiere die Phantom Wallet-Erweiterung!";
+            connectButton.disabled = true;
+        }
+
+        // Verbinden mit Phantom Wallet
+        connectButton.onclick = async () => {
+            try {
+                const resp = await window.solana.connect();
+                const publicKey = resp.publicKey.toString();
+                walletAddressElement.innerText = `Verbunden: ${publicKey}`;
+                statusElement.innerText = "Wallet erfolgreich verbunden!";
+            } catch (err) {
+                console.error(err);
+                statusElement.innerText = "Verbindung fehlgeschlagen!";
+            }
+        };
+    </script>
+</body>
+</html>
