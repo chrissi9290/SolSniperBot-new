@@ -4,23 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SolSniperBot - Automatisierte Meme-Coin Snipes</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.0/lib/index.iife.js"></script>
 </head>
-<body>
-    <h1>SolSniperBot - Verbinde deine Phantom Wallet</h1>
-    <button id="connectButton">Phantom Wallet verbinden</button>
-    <p id="walletAddress"></p>
-    <p id="status"></p>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
 
-    <h2>Manueller Token Swap</h2>
-    <input type="text" id="inputToken" placeholder="Input Token (SOL)" />
-    <input type="text" id="outputToken" placeholder="Output Token (z.B. MEME)" />
-    <input type="number" id="amount" placeholder="Betrag in SOL" />
-    <button id="swapButton">Token tauschen</button>
+    <header class="w-full bg-gray-800 p-4 text-center">
+        <h1 class="text-3xl font-bold">SolSniperBot</h1>
+        <p class="text-gray-400">Automatisierte Meme-Coin Snipes mit Phantom Wallet</p>
+    </header>
 
-    <h2>Automatisierter Meme-Coin Sniper</h2>
-    <button id="snipeButton">Automatisch neue Meme-Coins kaufen</button>
+    <main class="flex flex-col items-center p-4 max-w-md w-full">
+        <!-- Wallet Verbindung -->
+        <div class="my-6">
+            <button id="connectButton" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                Phantom Wallet verbinden
+            </button>
+            <p id="walletAddress" class="text-green-400 mt-2"></p>
+        </div>
 
+        <!-- Manueller Token Swap -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md w-full mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Manueller Token Swap</h2>
+            <input type="text" id="inputToken" placeholder="Input Token (z.B. SOL)" 
+                class="w-full p-2 mb-2 bg-gray-700 rounded text-white" />
+            <input type="text" id="outputToken" placeholder="Output Token (z.B. MEME)" 
+                class="w-full p-2 mb-2 bg-gray-700 rounded text-white" />
+            <input type="number" id="amount" placeholder="Betrag in SOL" 
+                class="w-full p-2 mb-4 bg-gray-700 rounded text-white" />
+            <button id="swapButton" 
+                class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">
+                Token tauschen
+            </button>
+        </div>
+
+        <!-- Automatisierter Meme-Coin Sniper -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md w-full mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Automatisierter Meme-Coin Sniper</h2>
+            <button id="snipeButton" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+                Automatisch neue Meme-Coins kaufen
+            </button>
+        </div>
+
+        <!-- Status-Anzeige -->
+        <p id="status" class="text-yellow-400 font-semibold"></p>
+    </main>
+
+    <footer class="w-full bg-gray-800 p-4 text-center">
+        <p class="text-gray-500">© 2025 SolSniperBot - Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <!-- JavaScript -->
     <script>
         const connectButton = document.getElementById('connectButton');
         const swapButton = document.getElementById('swapButton');
@@ -59,13 +95,11 @@
                 const response = await fetch(`https://api.raydium.io/v2/pairs/${tokenMint}`);
                 const poolData = await response.json();
 
-                // Prüfe, ob der Pool eine Mindestliquidität hat (z.B. mehr als 50 SOL)
                 if (poolData.liquidity < 50) {
                     console.warn("Warnung: Geringe Liquidität, könnte ein Honeypot sein!");
                     return false;
                 }
 
-                console.log("Token scheint sicher handelbar zu sein.");
                 return true;
             } catch (err) {
                 console.error("Fehler beim Prüfen des Honeypots:", err);
@@ -73,7 +107,7 @@
             }
         }
 
-        // Raydium Swap-Funktion mit Honeypot-Check
+        // Raydium Swap-Funktion
         swapButton.onclick = async () => {
             const inputToken = document.getElementById('inputToken').value;
             const outputToken = document.getElementById('outputToken').value;
@@ -84,56 +118,29 @@
                 return;
             }
 
-            // Führe den Honeypot-Check vor dem Swap durch
             const isSellable = await checkIfSellable(outputToken);
             if (!isSellable) {
-                statusElement.innerText = "Achtung! Der Token könnte ein Honeypot sein. Swap abgebrochen!";
+                statusElement.innerText = "Token könnte ein Honeypot sein. Swap abgebrochen!";
                 return;
             }
 
-            try {
-                statusElement.innerText = "Swap wird vorbereitet...";
-
-                // Beispiel-Request an Raydium API
-                const quoteUrl = `https://api.raydium.io/v2/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${amount}&slippage=1`;
-                const response = await fetch(quoteUrl);
-                const quote = await response.json();
-
-                if (quote) {
-                    statusElement.innerText = "Swap erfolgreich vorbereitet!";
-                    console.log("Swap-Quote:", quote);
-                } else {
-                    statusElement.innerText = "Fehler beim Abrufen der Swap-Quote!";
-                }
-            } catch (err) {
-                console.error(err);
-                statusElement.innerText = "Fehler beim Swap!";
-            }
+            statusElement.innerText = "Swap wird vorbereitet...";
         };
 
         // Automatisierter Meme-Coin Sniper
         snipeButton.onclick = async () => {
             statusElement.innerText = "Suche nach neuen Meme-Coins...";
             try {
-                // Überwache die Raydium-Pools auf neue Einträge
                 const poolsUrl = "https://api.raydium.io/v2/pairs";
                 const response = await fetch(poolsUrl);
                 const pools = await response.json();
 
-                // Suche nach neuen Pools mit "MEME" im Token-Namen
                 const newMemePools = pools.filter(pool => pool.name.includes("MEME"));
-                console.log("Gefundene Meme-Coins:", newMemePools);
-
                 if (newMemePools.length > 0) {
-                    statusElement.innerText = `Gefunden: ${newMemePools.length} Meme-Coins! Automatischer Kauf wird vorbereitet...`;
-                    
-                    // Beispielhafter Kauf des ersten gefundenen Tokens
                     const firstMemeToken = newMemePools[0];
-                    document.getElementById('inputToken').value = "SOL"; // Beispiel Input Token
+                    document.getElementById('inputToken').value = "SOL";
                     document.getElementById('outputToken').value = firstMemeToken.baseMint;
-                    document.getElementById('amount').value = 0.1; // Kauf von 0.1 SOL
-
-                    // Automatisch den Swap ausführen
+                    document.getElementById('amount').value = 0.1;
                     swapButton.click();
                 } else {
                     statusElement.innerText = "Keine neuen Meme-Coins gefunden.";
@@ -144,5 +151,6 @@
             }
         };
     </script>
+
 </body>
 </html>
