@@ -15,7 +15,7 @@
         input[type="number"], input[type="text"], select { width: 100%; padding: 10px; margin-top: 5px; }
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
-        #walletAddress, #walletBalance { word-wrap: break-word; }
+        #walletAddress, #walletBalance, #priceData { word-wrap: break-word; }
     </style>
 </head>
 <body>
@@ -33,14 +33,12 @@
         </div>
 
         <div class="card">
-            <h2>SOL senden</h2>
-            <label for="recipientAddress">Empfänger-Adresse:</label>
-            <input type="text" id="recipientAddress" placeholder="Solana Wallet Adresse">
+            <h2>Live-Preisdaten</h2>
+            <label for="tokenMint">Token-Mint-Adresse eingeben:</label>
+            <input type="text" id="tokenMint" placeholder="Token Mint Adresse (z. B. USDC)" value="So11111111111111111111111111111111111111112">
             
-            <label for="sendAmount">Betrag in SOL:</label>
-            <input type="number" id="sendAmount" placeholder="Menge in SOL" min="0.1" step="0.1">
-            
-            <button onclick="sendSol()">SOL senden</button>
+            <button onclick="fetchPriceData()">Preis abrufen</button>
+            <p id="priceData">Aktueller Preis: -</p>
         </div>
     </div>
 
@@ -79,32 +77,31 @@
             }
         }
 
-        // Funktion zum Senden von SOL
-        async function sendSol() {
-            const recipientAddress = document.getElementById('recipientAddress').value;
-            const sendAmount = parseFloat(document.getElementById('sendAmount').value);
-
-            if (!recipientAddress || !sendAmount) {
-                alert('Bitte Empfänger-Adresse und Betrag angeben.');
+        // Funktion zum Abrufen der Preisdaten von Jupiter Aggregator API
+        async function fetchPriceData() {
+            const tokenMint = document.getElementById('tokenMint').value.trim();
+            if (!tokenMint) {
+                alert('Bitte eine gültige Token-Mint-Adresse eingeben.');
                 return;
             }
 
             try {
-                const recipientPublicKey = new solanaWeb3.PublicKey(recipientAddress);
-                const transaction = new solanaWeb3.Transaction().add(
-                    solanaWeb3.SystemProgram.transfer({
-                        fromPubkey: userPublicKey,
-                        toPubkey: recipientPublicKey,
-                        lamports: sendAmount * solanaWeb3.LAMPORTS_PER_SOL,
-                    })
-                );
+                const response = await fetch(`https://quote-api.jup.ag/v4/price?ids=${tokenMint}`);
+                if (!response.ok) {
+                    throw new Error('Fehler beim Abrufen der Preisdaten');
+                }
+                const data = await response.json();
+                console.log('Preisdaten:', data);
 
-                const { signature } = await window.solana.signAndSendTransaction(transaction);
-                alert(`Transaktion erfolgreich! Signatur: ${signature}`);
-                await getWalletBalance(userPublicKey.toString());
+                if (data[tokenMint]) {
+                    const price = data[tokenMint].price;
+                    document.getElementById('priceData').innerText = `Aktueller Preis: ${price} USD`;
+                } else {
+                    document.getElementById('priceData').innerText = 'Kein Preis für dieses Token verfügbar.';
+                }
             } catch (err) {
-                console.error('Fehler beim Senden von SOL:', err);
-                alert('Fehler beim Senden von SOL: ' + err.message);
+                console.error('Fehler beim Abrufen der Preisdaten:', err);
+                alert('Fehler beim Abrufen der Preisdaten: ' + err.message);
             }
         }
     </script>
