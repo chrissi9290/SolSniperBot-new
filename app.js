@@ -13,8 +13,6 @@ const logsDiv = document.getElementById('logs');
 
 let provider = null;
 let publicKey = null;
-let balanceInterval = null;
-let tradingInterval = null;
 let snipingInterval = null;
 
 // Wallet-Verbindung herstellen
@@ -28,18 +26,9 @@ connectWalletBtn.addEventListener('click', async () => {
     try {
         const resp = await provider.connect();
         publicKey = resp.publicKey;
-
-        if (!publicKey) {
-            logMessage('Kein Public Key von der Wallet erhalten.', true);
-            return;
-        }
-
         walletAddressDisplay.textContent = `Verbunden: ${publicKey.toString()}`;
         logMessage(`Wallet verbunden: ${publicKey.toString()}`);
         await updateWalletBalance();
-
-        if (balanceInterval) clearInterval(balanceInterval);
-        balanceInterval = setInterval(updateWalletBalance, 30000);
     } catch (err) {
         logMessage(`Fehler bei Wallet-Verbindung: ${err.message}`, true);
     }
@@ -67,11 +56,35 @@ function logMessage(message, isError = false) {
 }
 
 // Sniping Funktion starten
-document.getElementById('startSnipingBtn').addEventListener('click', () => {
+document.getElementById('startSnipingBtn').addEventListener('click', async () => {
     logMessage('Sniping-Funktion gestartet...');
+    snipingInterval = setInterval(async () => {
+        const newToken = await fetchNewlyListedToken();
+        if (newToken) {
+            logMessage(`Neuer Token gefunden: ${newToken.symbol} (${newToken.address})`);
+            const isSafe = await checkTokenSafety(newToken.address);
+            if (isSafe) await executeTrade(newToken.address);
+        }
+    }, 10000);
 });
 
-// Sniping Funktion stoppen
-document.getElementById('stopSnipingBtn').addEventListener('click', () => {
-    logMessage('Sniping-Funktion gestoppt.');
-});
+// Token auf Sicherheit prüfen
+async function checkTokenSafety(tokenAddress) {
+    try {
+        const response = await fetch(`${BIRDEYE_API}/token/${tokenAddress}/security`);
+        const data = await response.json();
+        if (data.is_honeypot) {
+            logMessage(`WARNUNG: Token ${tokenAddress} ist ein Honeypot!`, true);
+            return false;
+        }
+        if (data.liquidity < 1000) {
+            logMessage(`WARNUNG: Zu wenig Liquidität (${data.liquidity} USD)`, true);
+            return false;
+        }
+        logMessage(`Token ${tokenAddress} hat den Sicherheitscheck bestanden.`);
+        return true;
+    } catch (err) {
+        logMessage(`Fehler beim Sicherheitscheck: ${err.message}`, true);
+        return false;
+    }
+}
