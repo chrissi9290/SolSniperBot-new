@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SolSniper Bot Dashboard</title>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; margin: 0; }
         header { background-color: #007bff; color: white; padding: 10px 0; text-align: center; }
@@ -45,10 +46,13 @@
             <button onclick="connectWallet()">Wallet verbinden</button>
             <p id="walletStatus">Keine Wallet verbunden</p>
             <p id="walletAddress"></p>
+            <p id="walletBalance"></p>
         </div>
     </div>
 
     <script>
+        const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+
         async function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
                 try {
@@ -56,11 +60,23 @@
                     const address = response.publicKey.toString();
                     document.getElementById('walletStatus').innerText = 'Wallet verbunden';
                     document.getElementById('walletAddress').innerText = `Adresse: ${address}`;
+                    await getWalletBalance(address);
                 } catch (err) {
                     console.error('Wallet Verbindung fehlgeschlagen:', err);
                 }
             } else {
                 alert('Phantom Wallet nicht gefunden! Bitte installiere die Phantom Wallet.');
+            }
+        }
+
+        async function getWalletBalance(address) {
+            try {
+                const publicKey = new solanaWeb3.PublicKey(address);
+                const balance = await connection.getBalance(publicKey);
+                const solBalance = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
+                document.getElementById('walletBalance').innerText = `Guthaben: ${solBalance} SOL`;
+            } catch (err) {
+                console.error('Fehler beim Abrufen des Guthabens:', err);
             }
         }
 
