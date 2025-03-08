@@ -38,17 +38,37 @@
             margin-top: 20px;
             font-size: 18px;
         }
+        input {
+            padding: 5px;
+            margin: 5px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>SolSniper Bot</h1>
         <p>Snipe Meme-Coins auf Pump.fun und Raydium in Echtzeit!</p>
-        <button class="button" id="connectWallet">Wallet verbinden</button>
-        <button class="button" id="startBot">Bot starten</button>
-        <button class="button" id="stopBot">Bot stoppen</button>
-        <div class="status" id="status">Status: Bot ist gestoppt</div>
+        
+        <!-- Registrierung -->
+        <div id="registerForm">
+            <h2>Account erstellen</h2>
+            <input type="text" id="username" placeholder="Benutzername" />
+            <input type="password" id="password" placeholder="Passwort" />
+            <button class="button" id="createAccount">Account erstellen</button>
+        </div>
+
+        <!-- Bot-Steuerung (nach Registrierung sichtbar) -->
+        <div id="botControls" style="display: none;">
+            <p>Bot-Wallet: <span id="walletAddress">Nicht erstellt</span></p>
+            <button class="button" id="startBot">Bot starten</button>
+            <button class="button" id="stopBot">Bot stoppen</button>
+            <div class="status" id="status">Status: Bot ist gestoppt</div>
+        </div>
     </div>
+
+    <!-- Solana Web3.js über CDN laden -->
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
