@@ -50,3 +50,28 @@ input[type="number"] {
     color: red;
     font-weight: bold;
 }
+
+.action-btn {
+    display: inline-block;
+    margin: 10px 5px;
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.action-btn:hover {
+    background-color: #45a049;
+}
+
+.trading-controls, .sniping-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
