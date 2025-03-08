@@ -15,7 +15,7 @@
         input[type="number"], select { width: 100%; padding: 10px; margin-top: 5px; }
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
-        #walletAddress { word-wrap: break-word; }
+        #walletAddress, #walletBalance { word-wrap: break-word; }
     </style>
 </head>
 <body>
@@ -51,8 +51,10 @@
     </div>
 
     <script>
+        // Verbindung zur Solana Blockchain herstellen
         const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
 
+        // Funktion zur Verbindung der Wallet
         async function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
                 try {
@@ -60,26 +62,33 @@
                     const address = response.publicKey.toString();
                     document.getElementById('walletStatus').innerText = 'Wallet verbunden';
                     document.getElementById('walletAddress').innerText = `Adresse: ${address}`;
+                    console.log('Verbunden mit Adresse:', address);
                     await getWalletBalance(address);
                 } catch (err) {
                     console.error('Wallet Verbindung fehlgeschlagen:', err);
+                    alert('Fehler bei der Wallet-Verbindung: ' + err.message);
                 }
             } else {
                 alert('Phantom Wallet nicht gefunden! Bitte installiere die Phantom Wallet.');
             }
         }
 
+        // Funktion zum Abrufen des SOL-Guthabens
         async function getWalletBalance(address) {
             try {
+                console.log('Guthabenabfrage für Adresse:', address);
                 const publicKey = new solanaWeb3.PublicKey(address);
                 const balance = await connection.getBalance(publicKey);
+                console.log('Erhaltenes Guthaben (Lamports):', balance);
                 const solBalance = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
                 document.getElementById('walletBalance').innerText = `Guthaben: ${solBalance} SOL`;
             } catch (err) {
                 console.error('Fehler beim Abrufen des Guthabens:', err);
+                alert('Fehler beim Abrufen des Guthabens: ' + err.message);
             }
         }
 
+        // Sniper-Funktion (Platzhalter)
         function startSniping() {
             const solAmount = document.getElementById('solAmount').value;
             const slippage = document.getElementById('slippage').value;
