@@ -1,93 +1,211 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Friedrich – Moderne Website</title>
-  <!-- Verknüpfung der externen CSS-Datei -->
-  <link rel="stylesheet" href="style.css" />
-  <!-- Optionale Google Font Einbindung -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$FRIEDRICH Coin</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #589ecc;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .site-header {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #FFD700;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 150px 20px 50px;
+            position: relative;
+            background-color: #589ecc;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin: 0.5em 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #FFD700;
+            color: black;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #FFA500, #FFD700);
+        }
+
+        /* Bubble Animation */
+        .bubble-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            animation: rise 20s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                transform: translateY(-1000px) scale(1.5);
+            }
+        }
+
+        /* Content */
+        .content {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #87CEEB;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: justify;
+            color: black;
+        }
+
+        h2 {
+            color: white;
+            margin-top: 40px;
+        }
+
+        /* Footer Logos */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-container img {
+            width: 40px;
+            height: 40px;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Header mit Navigation -->
-  <header class="site-header">
-    <nav class="navbar container">
-      <div class="logo">Friedrich</div>
-      <ul class="nav-menu">
-        <li><a href="#about">Über uns</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#cta">Mitmachen</a></li>
-      </ul>
-      <!-- Hamburger-Menü Icon für Mobile -->
-      <button class="menu-toggle" aria-label="Menü umschalten">&#9776;</button>
-    </nav>
-  </header>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="navbar">
+            <div class="logo">$FRIEDRICH</div>
+            <ul class="nav-menu">
+                <li><a href="#about">About</a></li>
+                <li><a href="#tokenomics">Tokenomics</a></li>
+                <li><a href="#whitepaper">Whitepaper</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <!-- Hero-Bereich mit Hintergrund und CTA -->
-  <section class="hero container">
-    <h1>Willkommen bei <span>Friedrich</span></h1>
-    <p class="subtitle">Die Zukunft beginnt hier – modern, dynamisch und blau.</p>
-    <a href="Friedrich_Whitepaper_NoName.pdf" class="cta-button">Whitepaper herunterladen</a>
-    <!-- Blasen-Hintergrund -->
-    <div class="bubble-container">
-      <div class="bubble" style="width: 80px; height: 80px; left: 10%; animation-duration: 15s;"></div>
-      <div class="bubble" style="width: 100px; height: 100px; left: 30%; animation-duration: 20s; animation-delay: 2s;"></div>
-      <div class="bubble" style="width: 60px; height: 60px; left: 70%; animation-duration: 18s; animation-delay: 4s;"></div>
-      <div class="bubble" style="width: 90px; height: 90px; left: 85%; animation-duration: 22s; animation-delay: 1s;"></div>
-      <div class="bubble" style="width: 50px; height: 50px; left: 50%; animation-duration: 16s; animation-delay: 3s;"></div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Welcome to $FRIEDRICH</h1>
+        <p class="subtitle">The first Solana memecoin inspired by Germany’s new Chancellor!</p>
+        <a href="#whitepaper" class="cta-button">View Whitepaper</a>
+        <div class="bubble-container">
+            <div class="bubble" style="width: 80px; left: 10%; animation-duration: 15s;"></div>
+            <div class="bubble" style="width: 100px; left: 30%; animation-duration: 20s;"></div>
+            <div class="bubble" style="width: 60px; left: 70%; animation-duration: 18s;"></div>
+            <div class="bubble" style="width: 90px; left: 85%; animation-duration: 22s;"></div>
+            <div class="bubble" style="width: 50px; left: 50%; animation-duration: 16s;"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="content">
+        <h2>🔥 This is $FRIEDRICH</h2>
+        <p>
+            The O.G. Solana Token dedicated to Germany’s newly elected Chancellor, Friedrich. 
+            A no-nonsense leader with a vision, Friedrich is the strong, decisive politician Europe has been waiting for—one who cuts through the noise and takes real action when it matters most.
+        </p>
+    </section>
+
+    <!-- Tokenomics Section -->
+    <section id="tokenomics" class="content">
+        <h2>💰 Supply & Distribution</h2>
+        <p>Total Supply: 1,000,000,000 $FRIEDRICH</p>
+        <p>Circulating Supply: 1,000,000,000 $FRIEDRICH</p>
+        <p>Community Allocation: 100% - All tokens go to the community</p>
+    </section>
+
+    <!-- Whitepaper Section -->
+    <section id="whitepaper" class="content">
+        <h2>📄 Whitepaper</h2>
+        <p>Learn more about our project by viewing the official whitepaper.</p>
+        <a href="https://drive.google.com/file/d/11n-hTR9aN8EBzxpUu1w0vPxZrMLV9oYN/view?usp=drivesdk" 
+           target="_blank" 
+           class="cta-button">📄 View Whitepaper</a>
+    </section>
+
+    <!-- Footer with Social Media Links -->
+    <div class="logo-container">
+        <a href="https://dexscreener.com/" target="_blank"><img src="https://imgur.com/jsB72Q8.jpeg"></a>
+        <a href="https://x.com/friedrichonsol" target="_blank"><img src="https://i.imgur.com/sY3vPnC.jpeg"></a>
+        <a href="https://t.me/friedrichmerzz" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Telegram_2019_Logo.svg"></a>
+        <a href="https://www.facebook.com/profile.php?id=61572844793604" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"></a>
     </div>
-  </section>
-
-  <!-- Über uns Sektion -->
-  <section id="about" class="about-section container">
-    <h2>Über Friedrich</h2>
-    <p>Friedrich steht für einen modernen Aufbruch. Als Plattform, inspiriert von Elon4AfD, verbinden wir innovative Technologie mit traditionellen Werten. Erfahre, was uns antreibt und wie wir die Zukunft gestalten.</p>
-  </section>
-
-  <!-- Features Sektion -->
-  <section id="features" class="features-section container">
-    <h2>Unsere Features</h2>
-    <div class="features-grid">
-      <div class="feature-item">
-        <h3>Innovation</h3>
-        <p>Modernste Web-Technologie mit interaktiven 3D-Elementen und nahtlosen Animationen.</p>
-      </div>
-      <div class="feature-item">
-        <h3>Responsivität</h3>
-        <p>Optimiert für alle Geräte – egal ob Smartphone, Tablet oder Desktop.</p>
-      </div>
-      <div class="feature-item">
-        <h3>Benutzerfreundlich</h3>
-        <p>Intuitive Navigation und klare Strukturen für ein optimales Nutzererlebnis.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Call-to-Action Sektion -->
-  <section id="cta" class="cta-section">
-    <div class="cta-content container">
-      <h2>Bereit, Teil der Bewegung zu werden?</h2>
-      <a href="Friedrich_Whitepaper_NoName.pdf" class="cta-button large">Jetzt mitmachen</a>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2025 Friedrich – Alle Rechte vorbehalten.</p>
-    </div>
-  </footer>
-
-  <!-- Optionales JavaScript für das mobile Menü -->
-  <script>
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    menuToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('open');
-    });
-  </script>
 
 </body>
 </html>
