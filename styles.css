@@ -20,6 +20,8 @@ button {
     color: white;
     border: none;
     border-radius: 5px;
+    min-width: 100px;
+    max-width: 100%;
 }
 
 button:hover {
@@ -28,6 +30,8 @@ button:hover {
 
 section {
     padding: 20px;
+    max-width: 600px;
+    margin: auto;
 }
 
 input[type="number"] {
@@ -51,27 +55,25 @@ input[type="number"] {
     font-weight: bold;
 }
 
-.action-btn {
-    display: inline-block;
-    margin: 10px 5px;
-    padding: 10px 15px;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-size: 1em;
-    cursor: pointer;
-    min-width: 150px;
-}
-
-.action-btn:hover {
-    background-color: #45a049;
-}
-
-.trading-controls, .sniping-controls {
+.safety-controls {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
     gap: 10px;
     margin-top: 20px;
+}
+
+label {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+@media (max-width: 768px) {
+    .action-btn {
+        min-width: 100%;
+        margin: 10px 0;
+    }
 }
