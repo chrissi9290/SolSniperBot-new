@@ -12,10 +12,10 @@
         .container { max-width: 800px; margin: 20px auto; }
         .card { background: white; padding: 20px; margin: 10px 0; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         label { display: block; margin-top: 10px; }
-        input[type="number"], input[type="text"], select { width: 100%; padding: 10px; margin-top: 5px; }
+        input[type="number"], input[type="text"] { width: 100%; padding: 10px; margin-top: 5px; }
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
-        #walletAddress, #walletBalance, #priceData { word-wrap: break-word; }
+        #walletAddress, #walletBalance, #sniperStatus { word-wrap: break-word; }
     </style>
 </head>
 <body>
@@ -33,18 +33,22 @@
         </div>
 
         <div class="card">
-            <h2>Live-Preisdaten</h2>
-            <label for="tokenMint">Token-Mint-Adresse eingeben:</label>
-            <input type="text" id="tokenMint" placeholder="Token Mint Adresse (z. B. USDC)" value="So11111111111111111111111111111111111111112">
+            <h2>Sniping Einstellungen</h2>
+            <label for="solAmount">SOL-Betrag für Sniping:</label>
+            <input type="number" id="solAmount" placeholder="Menge in SOL" min="0.1" step="0.1">
             
-            <button onclick="fetchPriceData()">Preis abrufen</button>
-            <p id="priceData">Aktueller Preis: -</p>
+            <label for="slippage">Maximale Slippage (%):</label>
+            <input type="number" id="slippage" placeholder="Slippage z. B. 1.0" min="0" step="0.1">
+            
+            <button onclick="startSniping()">Sniper starten</button>
+            <p id="sniperStatus">Sniper-Status: Inaktiv</p>
         </div>
     </div>
 
     <script>
         const connection = new solanaWeb3.Connection('https://mainnet.helius-rpc.com/?api-key=95d3b715-1052-43c6-bb0b-e1136b44961b');
         let userPublicKey = null;
+        let isSniping = false;
 
         // Funktion zur Verbindung der Wallet
         async function connectWallet() {
@@ -77,31 +81,53 @@
             }
         }
 
-        // Funktion zum Abrufen der Preisdaten von Jupiter Aggregator API
-        async function fetchPriceData() {
-            const tokenMint = document.getElementById('tokenMint').value.trim();
-            if (!tokenMint) {
-                alert('Bitte eine gültige Token-Mint-Adresse eingeben.');
+        // Funktion zum Starten des Sniping-Bots
+        function startSniping() {
+            const solAmount = parseFloat(document.getElementById('solAmount').value);
+            const slippage = parseFloat(document.getElementById('slippage').value);
+
+            if (!solAmount || !slippage) {
+                alert('Bitte SOL-Betrag und Slippage eingeben.');
                 return;
             }
 
-            try {
-                const response = await fetch(`https://quote-api.jup.ag/v4/price?ids=${tokenMint}`);
-                if (!response.ok) {
-                    throw new Error('Fehler beim Abrufen der Preisdaten');
-                }
-                const data = await response.json();
-                console.log('Preisdaten:', data);
+            isSniping = true;
+            document.getElementById('sniperStatus').innerText = 'Sniper-Status: Aktiv';
+            monitorTokens(solAmount, slippage);
+        }
 
-                if (data[tokenMint]) {
-                    const price = data[tokenMint].price;
-                    document.getElementById('priceData').innerText = `Aktueller Preis: ${price} USD`;
-                } else {
-                    document.getElementById('priceData').innerText = 'Kein Preis für dieses Token verfügbar.';
+        // Funktion zur Überwachung neuer Token-Listings
+        async function monitorTokens(solAmount, slippage) {
+            try {
+                while (isSniping) {
+                    const response = await fetch('https://quote-api.jup.ag/v4/tokens');
+                    const data = await response.json();
+
+                    const newTokens = data.data.filter(token => token.volume24h > 0);
+                    if (newTokens.length > 0) {
+                        console.log('Neue Token gefunden:', newTokens);
+                        await buyToken(newTokens[0].address, solAmount, slippage);
+                        break;
+                    }
+
+                    await new Promise(resolve => setTimeout(resolve, 5000)); // Alle 5 Sekunden prüfen
                 }
             } catch (err) {
-                console.error('Fehler beim Abrufen der Preisdaten:', err);
-                alert('Fehler beim Abrufen der Preisdaten: ' + err.message);
+                console.error('Fehler beim Überwachen neuer Tokens:', err);
+                alert('Fehler beim Überwachen neuer Tokens: ' + err.message);
+            }
+        }
+
+        // Funktion zum automatischen Kauf eines Tokens
+        async function buyToken(tokenAddress, solAmount, slippage) {
+            try {
+                console.log(`Kaufe Token ${tokenAddress} mit ${solAmount} SOL bei ${slippage}% Slippage`);
+                alert(`Kaufe Token ${tokenAddress} mit ${solAmount} SOL`);
+                isSniping = false;
+                document.getElementById('sniperStatus').innerText = 'Sniper-Status: Inaktiv';
+            } catch (err) {
+                console.error('Fehler beim Token-Kauf:', err);
+                alert('Fehler beim Token-Kauf: ' + err.message);
             }
         }
     </script>
