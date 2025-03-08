@@ -18,20 +18,6 @@
 
     <main>
         <section>
-            <h2>Automatisiertes Trading (TP & SL in %)</h2>
-            <div class="trading-controls">
-                <label for="tp">Take Profit (%):</label>
-                <input type="number" id="tp" placeholder="z. B. 10">
-                
-                <label for="sl">Stop Loss (%):</label>
-                <input type="number" id="sl" placeholder="z. B. 5">
-                
-                <button id="startTradingBtn" class="action-btn">Trading starten</button>
-                <button id="stopTradingBtn" class="action-btn">Trading stoppen</button>
-            </div>
-        </section>
-
-        <section>
             <h2>Sniping Funktion</h2>
             <div class="sniping-controls">
                 <button id="startSnipingBtn" class="action-btn">Sniping starten</button>
@@ -49,6 +35,34 @@
                 <label>
                     Liquiditätsprüfung aktivieren:
                     <input type="checkbox" id="liquidityCheck" checked>
+                </label>
+                <label>
+                    Check if Freezable:
+                    <input type="checkbox" id="checkFreezable" checked>
+                </label>
+                <label>
+                    Check if Mintable:
+                    <input type="checkbox" id="checkMintable" checked>
+                </label>
+                <label>
+                    Check if Immutable:
+                    <input type="checkbox" id="checkImmutable" checked>
+                </label>
+                <label>
+                    Check if LP Burned:
+                    <input type="checkbox" id="checkLPBurned" checked>
+                </label>
+                <label>
+                    Skip LP Bundles:
+                    <input type="checkbox" id="skipLPBundles" checked>
+                </label>
+                <label>
+                    Check if Socials:
+                    <input type="checkbox" id="checkSocials" checked>
+                </label>
+                <label>
+                    Skip 'pump' Tokens:
+                    <input type="checkbox" id="skipPumpTokens" checked>
                 </label>
             </div>
         </section>
