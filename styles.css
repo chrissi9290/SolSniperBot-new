@@ -34,8 +34,8 @@ section {
     margin: auto;
 }
 
-input[type="number"], input[type="checkbox"] {
-    margin: 10px 0;
+input[type="checkbox"] {
+    margin-left: 10px;
 }
 
 .logs {
