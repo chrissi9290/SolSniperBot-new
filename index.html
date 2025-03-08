@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolSniperBot</title>
+    <title>SolSniperBot - Automatisierte Meme-Coin Snipes</title>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.0/lib/index.iife.js"></script>
 </head>
 <body>
@@ -18,9 +18,13 @@
     <input type="number" id="amount" placeholder="Betrag in SOL" />
     <button id="swapButton">Token tauschen</button>
 
+    <h2>Automatisierter Meme-Coin Sniper</h2>
+    <button id="snipeButton">Automatisch neue Meme-Coins kaufen</button>
+
     <script>
         const connectButton = document.getElementById('connectButton');
         const swapButton = document.getElementById('swapButton');
+        const snipeButton = document.getElementById('snipeButton');
         const walletAddressElement = document.getElementById('walletAddress');
         const statusElement = document.getElementById('status');
         
@@ -32,6 +36,7 @@
             statusElement.innerText = "Bitte installiere die Phantom Wallet-Erweiterung!";
             connectButton.disabled = true;
             swapButton.disabled = true;
+            snipeButton.disabled = true;
         }
 
         // Verbinden mit Phantom Wallet
@@ -61,27 +66,54 @@
 
             try {
                 statusElement.innerText = "Swap wird vorbereitet...";
-                
-                // Beispiel-Transaktion (muss durch tatsächliche Raydium-Logik ersetzt werden)
-                const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
-                const transaction = new solanaWeb3.Transaction();
 
-                // Dummy-Transfer zu eigener Adresse (Test)
-                const transferInstruction = solanaWeb3.SystemProgram.transfer({
-                    fromPubkey: wallet.publicKey,
-                    toPubkey: wallet.publicKey,
-                    lamports: solanaWeb3.LAMPORTS_PER_SOL * amount,
-                });
-                transaction.add(transferInstruction);
+                // Beispiel-Request an Raydium API
+                const quoteUrl = `https://api.raydium.io/v2/quote?inputMint=${inputToken}&outputMint=${outputToken}&amount=${amount}&slippage=1`;
+                const response = await fetch(quoteUrl);
+                const quote = await response.json();
 
-                // Signiere und sende die Transaktion
-                const { signature } = await wallet.signAndSendTransaction(transaction);
-                await connection.confirmTransaction(signature, 'processed');
-
-                statusElement.innerText = `Swap erfolgreich! Transaktions-ID: ${signature}`;
+                if (quote) {
+                    statusElement.innerText = "Swap erfolgreich vorbereitet!";
+                    console.log("Swap-Quote:", quote);
+                } else {
+                    statusElement.innerText = "Fehler beim Abrufen der Swap-Quote!";
+                }
             } catch (err) {
                 console.error(err);
                 statusElement.innerText = "Fehler beim Swap!";
+            }
+        };
+
+        // Automatisierter Meme-Coin Sniper
+        snipeButton.onclick = async () => {
+            statusElement.innerText = "Suche nach neuen Meme-Coins...";
+            try {
+                // Überwache die Raydium-Pools auf neue Einträge
+                const poolsUrl = "https://api.raydium.io/v2/pairs";
+                const response = await fetch(poolsUrl);
+                const pools = await response.json();
+
+                // Beispiel: Suche nach neuen Pools mit "MEME" im Token-Namen
+                const newMemePools = pools.filter(pool => pool.name.includes("MEME"));
+                console.log("Gefundene Meme-Coins:", newMemePools);
+
+                if (newMemePools.length > 0) {
+                    statusElement.innerText = `Gefunden: ${newMemePools.length} Meme-Coins! Automatischer Kauf wird vorbereitet...`;
+                    
+                    // Beispielhafter Kauf des ersten gefundenen Tokens
+                    const firstMemeToken = newMemePools[0];
+                    document.getElementById('inputToken').value = "SOL"; // Beispiel Input Token
+                    document.getElementById('outputToken').value = firstMemeToken.baseMint;
+                    document.getElementById('amount').value = 0.1; // Kauf von 0.1 SOL
+
+                    // Automatisch den Swap ausführen
+                    swapButton.click();
+                } else {
+                    statusElement.innerText = "Keine neuen Meme-Coins gefunden.";
+                }
+            } catch (err) {
+                console.error(err);
+                statusElement.innerText = "Fehler beim Suchen nach Meme-Coins!";
             }
         };
     </script>
