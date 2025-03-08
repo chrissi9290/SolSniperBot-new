@@ -30,3 +30,9 @@ button:hover {
     font-weight: bold;
     color: green;
 }
+
+#walletAddress {
+    margin-top: 10px;
+    font-weight: bold;
+    color: blue;
+}
