@@ -3,9 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>SolSniper Bot</title>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-wallets@0.10.2/dist/index.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.41.3/dist/web3.min.js"></script>
 </head>
 <body>
-    <h1>Willkommen zum SolSniper Bot!</h1>
+    <h1>SolSniper Bot</h1>
     <p>Automatisches Snipen von Meme-Coins auf Solana.</p>
+    <button id="connect-wallet">Wallet verbinden</button>
+    <p id="wallet-status">Keine Wallet verbunden</p>
+    
+    <script>
+        document.getElementById("connect-wallet").onclick = async () => {
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    const resp = await window.solana.connect();
+                    document.getElementById("wallet-status").textContent = "Verbunden mit " + resp.publicKey.toString();
+                } catch (err) {
+                    console.error("Wallet Verbindung fehlgeschlagen:", err);
+                }
+            } else {
+                alert("Bitte installiere die Phantom Wallet!");
+            }
+        };
+    </script>
 </body>
 </html>
