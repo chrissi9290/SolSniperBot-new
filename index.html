@@ -12,7 +12,7 @@
         .container { max-width: 800px; margin: 20px auto; }
         .card { background: white; padding: 20px; margin: 10px 0; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         label { display: block; margin-top: 10px; }
-        input[type="number"], select { width: 100%; padding: 10px; margin-top: 5px; }
+        input[type="number"], input[type="text"], select { width: 100%; padding: 10px; margin-top: 5px; }
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
         #walletAddress, #walletBalance { word-wrap: break-word; }
@@ -25,45 +25,38 @@
 
     <div class="container">
         <div class="card">
-            <h2>Sniping Einstellungen</h2>
-            <label for="solAmount">SOL-Betrag für Sniping:</label>
-            <input type="number" id="solAmount" placeholder="Menge in SOL" min="0.1" step="0.1">
-            
-            <label for="slippage">Maximale Slippage (%):</label>
-            <input type="number" id="slippage" placeholder="Slippage z. B. 1.0" min="0" step="0.1">
-            
-            <label for="stopLoss">Stop-Loss (%):</label>
-            <input type="number" id="stopLoss" placeholder="Stop-Loss z. B. -10" min="-100" max="0" step="1">
-            
-            <label for="takeProfit">Take-Profit (%):</label>
-            <input type="number" id="takeProfit" placeholder="Take-Profit z. B. 50" min="0" step="1">
-            
-            <button onclick="startSniping()">Sniper starten</button>
-        </div>
-        
-        <div class="card">
             <h2>Wallet-Verbindung</h2>
             <button onclick="connectWallet()">Wallet verbinden</button>
             <p id="walletStatus">Keine Wallet verbunden</p>
             <p id="walletAddress"></p>
             <p id="walletBalance"></p>
         </div>
+
+        <div class="card">
+            <h2>SOL senden</h2>
+            <label for="recipientAddress">Empfänger-Adresse:</label>
+            <input type="text" id="recipientAddress" placeholder="Solana Wallet Adresse">
+            
+            <label for="sendAmount">Betrag in SOL:</label>
+            <input type="number" id="sendAmount" placeholder="Menge in SOL" min="0.1" step="0.1">
+            
+            <button onclick="sendSol()">SOL senden</button>
+        </div>
     </div>
 
     <script>
-        // Verbindung zur Solana Blockchain über Helius RPC-Endpunkt
         const connection = new solanaWeb3.Connection('https://mainnet.helius-rpc.com/?api-key=95d3b715-1052-43c6-bb0b-e1136b44961b');
+        let userPublicKey = null;
 
         // Funktion zur Verbindung der Wallet
         async function connectWallet() {
             if (window.solana && window.solana.isPhantom) {
                 try {
                     const response = await window.solana.connect();
-                    const address = response.publicKey.toString();
+                    userPublicKey = response.publicKey;
                     document.getElementById('walletStatus').innerText = 'Wallet verbunden';
-                    document.getElementById('walletAddress').innerText = `Adresse: ${address}`;
-                    console.log('Verbunden mit Adresse:', address);
-                    await getWalletBalance(address);
+                    document.getElementById('walletAddress').innerText = `Adresse: ${userPublicKey.toString()}`;
+                    await getWalletBalance(userPublicKey.toString());
                 } catch (err) {
                     console.error('Wallet Verbindung fehlgeschlagen:', err);
                     alert('Fehler bei der Wallet-Verbindung: ' + err.message);
@@ -76,10 +69,8 @@
         // Funktion zum Abrufen des SOL-Guthabens
         async function getWalletBalance(address) {
             try {
-                console.log('Guthabenabfrage für Adresse:', address);
                 const publicKey = new solanaWeb3.PublicKey(address);
                 const balance = await connection.getBalance(publicKey);
-                console.log('Erhaltenes Guthaben (Lamports):', balance);
                 const solBalance = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
                 document.getElementById('walletBalance').innerText = `Guthaben: ${solBalance} SOL`;
             } catch (err) {
@@ -88,14 +79,33 @@
             }
         }
 
-        // Sniper-Funktion (Platzhalter)
-        function startSniping() {
-            const solAmount = document.getElementById('solAmount').value;
-            const slippage = document.getElementById('slippage').value;
-            const stopLoss = document.getElementById('stopLoss').value;
-            const takeProfit = document.getElementById('takeProfit').value;
-            
-            alert(`Sniping gestartet!\nSOL: ${solAmount}\nSlippage: ${slippage}%\nStop-Loss: ${stopLoss}%\nTake-Profit: ${takeProfit}%`);
+        // Funktion zum Senden von SOL
+        async function sendSol() {
+            const recipientAddress = document.getElementById('recipientAddress').value;
+            const sendAmount = parseFloat(document.getElementById('sendAmount').value);
+
+            if (!recipientAddress || !sendAmount) {
+                alert('Bitte Empfänger-Adresse und Betrag angeben.');
+                return;
+            }
+
+            try {
+                const recipientPublicKey = new solanaWeb3.PublicKey(recipientAddress);
+                const transaction = new solanaWeb3.Transaction().add(
+                    solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: userPublicKey,
+                        toPubkey: recipientPublicKey,
+                        lamports: sendAmount * solanaWeb3.LAMPORTS_PER_SOL,
+                    })
+                );
+
+                const { signature } = await window.solana.signAndSendTransaction(transaction);
+                alert(`Transaktion erfolgreich! Signatur: ${signature}`);
+                await getWalletBalance(userPublicKey.toString());
+            } catch (err) {
+                console.error('Fehler beim Senden von SOL:', err);
+                alert('Fehler beim Senden von SOL: ' + err.message);
+            }
         }
     </script>
 </body>
