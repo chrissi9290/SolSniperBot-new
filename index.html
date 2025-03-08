@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meme-Coin Trader</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.75.0/lib/index.iife.min.js"></script>
     <script src="app.js" defer></script>
 </head>
 <body>
@@ -34,17 +35,16 @@
         </section>
 
         <section>
+            <h2>Manueller Kauf/Verkauf</h2>
+            <label for="buyAmount">Menge (in SOL):</label>
+            <input type="number" id="buyAmount" placeholder="z. B. 0.1">
+            <button id="buyTokenBtn">Token kaufen</button>
+        </section>
+
+        <section>
             <h2>Logs</h2>
             <div id="logs" class="logs"></div>
         </section>
     </main>
-
-    <section>
-    <h2>Manueller Kauf/Verkauf</h2>
-    <label for="buyAmount">Menge (in SOL):</label>
-    <input type="number" id="buyAmount" placeholder="z. B. 0.1">
-    <button id="buyTokenBtn">Token kaufen</button>
-</section>
-    
 </body>
 </html>
