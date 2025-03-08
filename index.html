@@ -3,105 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolSniperBot - Admin-Dashboard</title>
+    <title>SolSniperBot - Abonnement-Modelle</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.0/lib/index.iife.js"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
 
     <header class="w-full bg-gray-800 p-4 text-center">
-        <h1 class="text-3xl font-bold">Admin-Dashboard - SolSniperBot</h1>
-        <p class="text-gray-400">Benutzerübersicht, Handelslogs und Bot-Steuerung</p>
+        <h1 class="text-3xl font-bold">SolSniperBot - Abonnement-Modelle</h1>
+        <p class="text-gray-400">Wähle dein Abonnement und starte mit dem automatisierten Trading</p>
     </header>
 
     <main class="flex flex-col items-center p-4 max-w-4xl w-full">
-        <!-- Admin-Bereich -->
+        <!-- Abonnement-Auswahl -->
         <div class="bg-gray-800 p-6 rounded-lg shadow-md w-full mb-6">
-            <h2 class="text-2xl font-semibold mb-4">Benutzerübersicht</h2>
-            <table class="w-full bg-gray-700 rounded">
-                <thead>
-                    <tr class="bg-gray-600">
-                        <th class="p-2">Benutzername</th>
-                        <th class="p-2">Wallet-Adresse</th>
-                        <th class="p-2">Status</th>
-                        <th class="p-2">Aktionen</th>
-                    </tr>
-                </thead>
-                <tbody id="userTable" class="text-center"></tbody>
-            </table>
+            <h2 class="text-2xl font-semibold mb-4">Wähle dein Abonnement</h2>
+            <select id="subscription" class="w-full p-2 mb-4 bg-gray-700 rounded text-white">
+                <option value="free">Kostenlos (1% Gebühren)</option>
+                <option value="silver">Silber (0.5% Gebühren)</option>
+                <option value="gold">Gold (Keine Gebühren, nur mit eigenem Token)</option>
+            </select>
+            <button id="subscribeButton" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">
+                Abonnement aktivieren
+            </button>
         </div>
 
+        <!-- Handels-Bereich -->
         <div class="bg-gray-800 p-6 rounded-lg shadow-md w-full mb-6">
-            <h2 class="text-2xl font-semibold mb-4">Handelslogs</h2>
-            <div id="tradeLogs" class="bg-gray-700 p-4 rounded h-64 overflow-y-auto text-sm"></div>
+            <h2 class="text-2xl font-semibold mb-4">Handel starten</h2>
+            <button id="tradeButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
+                Automatischer Handel starten
+            </button>
         </div>
 
+        <!-- Status-Anzeige -->
         <p id="status" class="text-yellow-400 font-semibold"></p>
     </main>
 
     <script>
-        const userTable = document.getElementById('userTable');
-        const tradeLogs = document.getElementById('tradeLogs');
+        const subscriptionSelect = document.getElementById('subscription');
+        const subscribeButton = document.getElementById('subscribeButton');
+        const tradeButton = document.getElementById('tradeButton');
         const statusElement = document.getElementById('status');
 
-        let users = [
-            { username: 'User1', wallet: 'SOL12345...', status: 'Aktiv' },
-            { username: 'User2', wallet: 'SOL67890...', status: 'Inaktiv' }
-        ];
+        let currentSubscription = "free";
+        let feeRate = 0.01; // Standard-Gebühren für kostenlose Mitgliedschaft
+        const goldTokenBalance = 100; // Beispiel: Eigenes Token-Guthaben
 
-        let logs = [
-            { message: 'Bot für User1 gestartet', timestamp: '2025-03-09 10:00' },
-            { message: 'Kauf von MEME-Token durchgeführt', timestamp: '2025-03-09 10:15' }
-        ];
+        // Abonnement aktivieren
+        subscribeButton.onclick = () => {
+            currentSubscription = subscriptionSelect.value;
+            if (currentSubscription === "free") {
+                feeRate = 0.01;
+                statusElement.innerText = "Kostenlose Mitgliedschaft aktiviert. 1% Gebühren pro Trade.";
+            } else if (currentSubscription === "silver") {
+                feeRate = 0.005;
+                statusElement.innerText = "Silber-Mitgliedschaft aktiviert. 0.5% Gebühren pro Trade.";
+            } else if (currentSubscription === "gold") {
+                if (goldTokenBalance >= 50) {
+                    feeRate = 0;
+                    statusElement.innerText = "Gold-Mitgliedschaft aktiviert. Keine Gebühren!";
+                } else {
+                    statusElement.innerText = "Nicht genügend eigene Token für die Gold-Mitgliedschaft!";
+                    currentSubscription = "free";
+                    feeRate = 0.01;
+                }
+            }
+        };
 
-        // Benutzerübersicht rendern
-        function renderUserTable() {
-            userTable.innerHTML = '';
-            users.forEach((user, index) => {
-                userTable.innerHTML += `
-                    <tr>
-                        <td class="p-2">${user.username}</td>
-                        <td class="p-2">${user.wallet}</td>
-                        <td class="p-2">${user.status}</td>
-                        <td class="p-2">
-                            <button class="bg-red-500 px-2 py-1 rounded" onclick="stopBot(${index})">Stop</button>
-                            <button class="bg-green-500 px-2 py-1 rounded" onclick="startBot(${index})">Start</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
+        // Simulierter Handelsvorgang mit Gebührenberechnung
+        tradeButton.onclick = () => {
+            const tradeAmount = 100; // Beispielhafter Trade-Betrag
+            const fee = tradeAmount * feeRate;
 
-        // Handelslogs rendern
-        function renderTradeLogs() {
-            tradeLogs.innerHTML = logs.map(log => 
-                `<p>[${log.timestamp}] ${log.message}</p>`
-            ).join('');
-        }
-
-        // Bot manuell stoppen
-        function stopBot(index) {
-            const user = users[index];
-            user.status = 'Inaktiv';
-            logs.push({ message: `Bot für ${user.username} gestoppt`, timestamp: new Date().toLocaleString() });
-            statusElement.innerText = `Bot für ${user.username} wurde gestoppt.`;
-            renderUserTable();
-            renderTradeLogs();
-        }
-
-        // Bot manuell starten
-        function startBot(index) {
-            const user = users[index];
-            user.status = 'Aktiv';
-            logs.push({ message: `Bot für ${user.username} gestartet`, timestamp: new Date().toLocaleString() });
-            statusElement.innerText = `Bot für ${user.username} wurde gestartet.`;
-            renderUserTable();
-            renderTradeLogs();
-        }
-
-        // Initiales Rendern
-        renderUserTable();
-        renderTradeLogs();
+            if (feeRate > 0) {
+                statusElement.innerText = `Trade durchgeführt. Gebühren: ${fee.toFixed(2)} SOL`;
+            } else {
+                statusElement.innerText = "Trade durchgeführt. Keine Gebühren!";
+            }
+        };
     </script>
 
 </body>
