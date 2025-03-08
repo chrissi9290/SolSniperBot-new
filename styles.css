@@ -33,7 +33,14 @@ section {
 .logs {
     background-color: #e0e0e0;
     padding: 10px;
-    height: 200px;
-    overflow-y: scroll;
+    height: 300px;
+    overflow-y: auto;
     border: 1px solid #ccc;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.log-error {
+    color: red;
+    font-weight: bold;
 }
