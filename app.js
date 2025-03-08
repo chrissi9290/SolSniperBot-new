@@ -16,7 +16,6 @@ let publicKey = null;
 let balanceInterval = null;
 let tradingInterval = null;
 let snipingInterval = null;
-let initialPrice = null;
 
 // Wallet-Verbindung herstellen
 connectWalletBtn.addEventListener('click', async () => {
@@ -68,36 +67,11 @@ function logMessage(message, isError = false) {
 }
 
 // Sniping Funktion starten
-document.getElementById('startSnipingBtn').addEventListener('click', async () => {
+document.getElementById('startSnipingBtn').addEventListener('click', () => {
     logMessage('Sniping-Funktion gestartet...');
-    snipingInterval = setInterval(async () => {
-        const newToken = await fetchNewlyListedToken();
-        if (newToken) {
-            logMessage(`Neuer Token gefunden: ${newToken.symbol} (${newToken.address})`);
-            await executeTrade(newToken.address);
-        }
-    }, 10000);
 });
 
 // Sniping Funktion stoppen
 document.getElementById('stopSnipingBtn').addEventListener('click', () => {
-    clearInterval(snipingInterval);
     logMessage('Sniping-Funktion gestoppt.');
 });
-
-// Abruf neuer Token-Listings
-async function fetchNewlyListedToken() {
-    try {
-        const response = await fetch(`${BIRDEYE_API}/new_tokens`);
-        const data = await response.json();
-        return data.length > 0 ? data[0] : null;
-    } catch (err) {
-        logMessage(`Fehler beim Abrufen neuer Token-Listings: ${err.message}`, true);
-    }
-}
-
-// Simulierter Kauf über die Raydium API
-async function executeTrade(tokenAddress) {
-    logMessage(`Versuche Kauf von Token: ${tokenAddress}`);
-    // Hier erfolgt die tatsächliche Kauf-Logik über die Raydium API
-}
