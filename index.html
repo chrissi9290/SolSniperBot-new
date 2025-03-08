@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolSniperBot - Erweiterte Funktionen</title>
+    <title>SolSniperBot - Automatisierte Meme-Coin Snipes</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.0/lib/index.iife.js"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
 
     <header class="w-full bg-gray-800 p-4 text-center">
-        <h1 class="text-3xl font-bold">SolSniperBot - Erweiterte Funktionen</h1>
-        <p class="text-gray-400">Automatisierte Meme-Coin Snipes mit erweiterten Handelsstrategien</p>
+        <h1 class="text-3xl font-bold">SolSniperBot - Automatische Meme-Coin Snipes</h1>
+        <p class="text-gray-400">Echtzeitüberwachung und automatisierte Käufe basierend auf Risiko-Strategien</p>
     </header>
 
     <main class="flex flex-col items-center p-4 max-w-md w-full">
@@ -25,7 +25,7 @@
 
         <!-- Erweiterte Sniper-Einstellungen -->
         <div class="bg-gray-800 p-6 rounded-lg shadow-md w-full mb-6">
-            <h2 class="text-2xl font-semibold mb-4">Erweiterte Sniper-Einstellungen</h2>
+            <h2 class="text-2xl font-semibold mb-4">Sniper-Einstellungen</h2>
             
             <!-- Auswahl der Sniper-Strategie -->
             <label class="block mb-2 text-gray-300">Sniper-Strategie:</label>
@@ -84,8 +84,7 @@
             try {
                 const resp = await window.solana.connect();
                 wallet = window.solana;
-                const publicKey = resp.publicKey.toString();
-                walletAddressElement.innerText = `Verbunden: ${publicKey}`;
+                walletAddressElement.innerText = `Verbunden: ${resp.publicKey.toString()}`;
                 statusElement.innerText = "Wallet erfolgreich verbunden!";
             } catch (err) {
                 console.error(err);
@@ -93,26 +92,58 @@
             }
         };
 
-        // Automatisierter Meme-Coin Sniper mit erweiterten Funktionen
+        // Automatisierter Meme-Coin Sniper
         snipeButton.onclick = async () => {
             statusElement.innerText = "Suche nach neuen Meme-Coins...";
 
             const strategy = document.getElementById('strategy').value;
             const takeProfit = parseFloat(document.getElementById('takeProfit').value);
             const stopLoss = parseFloat(document.getElementById('stopLoss').value);
-            const slippage = parseFloat(document.getElementById('slippage').value) / 100;
+            const slippage = parseFloat(slippageInput.value) / 100;
 
-            console.log("Strategie:", strategy, "TP:", takeProfit, "SL:", stopLoss, "Slippage:", slippage);
+            try {
+                const response = await fetch("https://api.raydium.io/v2/pairs");
+                const pools = await response.json();
 
-            // Beispiel für die Strategieumsetzung
-            if (strategy === "low") {
-                statusElement.innerText = "Niedriges Risiko ausgewählt. Fokus auf sichere Token.";
-            } else if (strategy === "medium") {
-                statusElement.innerText = "Mittleres Risiko. Ausgewogene Handelsstrategie.";
-            } else if (strategy === "high") {
-                statusElement.innerText = "Hohes Risiko! Schnellere Käufe mit weniger Sicherheitschecks.";
+                const newMemePools = pools.filter(pool => pool.name.includes("MEME"));
+
+                if (newMemePools.length > 0) {
+                    statusElement.innerText = `Gefunden: ${newMemePools.length} Meme-Coins! Bereite Kauf vor...`;
+                    
+                    for (const token of newMemePools) {
+                        const isHighRisk = strategy === "high";
+                        if (isHighRisk || await checkIfSellable(token.baseMint)) {
+                            console.log("Automatischer Kauf:", token.name);
+                            statusElement.innerText = `Automatischer Kauf von ${token.name} wird ausgeführt...`;
+                            // Hier könnte die tatsächliche Swap-Funktion aufgerufen werden
+                        }
+                    }
+                } else {
+                    statusElement.innerText = "Keine neuen Meme-Coins gefunden.";
+                }
+            } catch (err) {
+                console.error(err);
+                statusElement.innerText = "Fehler beim Suchen nach Meme-Coins!";
             }
         };
+
+        // Sicherheitscheck Funktion
+        async function checkIfSellable(tokenMint) {
+            try {
+                const response = await fetch(`https://api.raydium.io/v2/pairs/${tokenMint}`);
+                const poolData = await response.json();
+
+                if (poolData.liquidity < 50) {
+                    console.warn("Warnung: Geringe Liquidität!");
+                    return false;
+                }
+
+                return true;
+            } catch (err) {
+                console.error("Fehler beim Sicherheitscheck:", err);
+                return false;
+            }
+        }
     </script>
 
 </body>
