@@ -16,6 +16,9 @@
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
         #walletAddress, #walletBalance, #sniperStatus { word-wrap: break-word; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f4f4f4; }
     </style>
 </head>
 <body>
@@ -42,6 +45,23 @@
             
             <button onclick="startSniping()">Sniper starten</button>
             <p id="sniperStatus">Sniper-Status: Inaktiv</p>
+        </div>
+
+        <div class="card">
+            <h2>Trade-Log</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Token-Adresse</th>
+                        <th>Betrag (SOL)</th>
+                        <th>Status</th>
+                        <th>Zeit</th>
+                    </tr>
+                </thead>
+                <tbody id="tradeLog">
+                    <!-- Hier werden die Trades dynamisch hinzugefügt -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -105,29 +125,35 @@
 
                     const newTokens = data.data.filter(token => token.volume24h > 0);
                     if (newTokens.length > 0) {
-                        console.log('Neue Token gefunden:', newTokens);
                         await buyToken(newTokens[0].address, solAmount, slippage);
                         break;
                     }
 
-                    await new Promise(resolve => setTimeout(resolve, 5000)); // Alle 5 Sekunden prüfen
+                    await new Promise(resolve => setTimeout(resolve, 5000));
                 }
             } catch (err) {
                 console.error('Fehler beim Überwachen neuer Tokens:', err);
-                alert('Fehler beim Überwachen neuer Tokens: ' + err.message);
             }
         }
 
         // Funktion zum automatischen Kauf eines Tokens
         async function buyToken(tokenAddress, solAmount, slippage) {
             try {
-                console.log(`Kaufe Token ${tokenAddress} mit ${solAmount} SOL bei ${slippage}% Slippage`);
-                alert(`Kaufe Token ${tokenAddress} mit ${solAmount} SOL`);
+                const timestamp = new Date().toLocaleTimeString();
+                const tradeLog = document.getElementById('tradeLog');
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${tokenAddress}</td>
+                    <td>${solAmount} SOL</td>
+                    <td>Erfolgreich</td>
+                    <td>${timestamp}</td>
+                `;
+                tradeLog.appendChild(newRow);
+
                 isSniping = false;
                 document.getElementById('sniperStatus').innerText = 'Sniper-Status: Inaktiv';
             } catch (err) {
                 console.error('Fehler beim Token-Kauf:', err);
-                alert('Fehler beim Token-Kauf: ' + err.message);
             }
         }
     </script>
