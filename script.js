@@ -1,66 +1,57 @@
-// Globale Variable für die Bot-Wallet
+​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​// Globale Variable für die Bot-Wallet
 let botWallet = null;
 
-// Funktion zum Erstellen eines Accounts und Generieren einer Wallet
+// Funktion zum Erstellen eines Accounts
 async function createAccount() {
+    console.log("createAccount wurde aufgerufen"); // Debugging
+
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
     if (!username || !password) {
         alert("Bitte gib Benutzername und Passwort ein!");
+        console.log("Fehlende Eingaben");
+        return;
+    }
+
+    console.log("Eingaben OK:", username, password); // Debugging
+
+    // Prüfen, ob Solana Web3.js geladen ist
+    if (!window.solanaWeb3 || !window.solanaWeb3.Keypair) {
+        alert("Solana Web3.js nicht geladen!");
+        console.error("Solana Web3.js fehlt");
         return;
     }
 
     // Neue Solana-Wallet generieren
     botWallet = window.solanaWeb3.Keypair.generate();
     const publicKey = botWallet.publicKey.toString();
-    const privateKey = Array.from(botWallet.secretKey); // Private Key als Array
+    console.log("Wallet generiert:", publicKey); // Debugging
 
     // Wallet-Info anzeigen
     document.getElementById('walletAddress').innerText = publicKey;
     document.getElementById('status').innerText = `Account erstellt für ${username}. Wallet generiert.`;
-    console.log("Private Key (sicher speichern!):", privateKey); // Nur für Debugging, später entfernen!
 
     // Form ausblenden, Bot-Steuerung anzeigen
     document.getElementById('registerForm').style.display = 'none';
     document.getElementById('botControls').style.display = 'block';
-
-    // Account-Info im localStorage speichern (für Prototyp, später serverseitig)
-    localStorage.setItem('username', username);
-    localStorage.setItem('botPublicKey', publicKey);
-    localStorage.setItem('botPrivateKey', JSON.stringify(privateKey)); // Unsicher, nur für Prototyp!
 }
 
 // Event-Listener für Account-Erstellung
-document.getElementById('createAccount').addEventListener('click', createAccount);
+const createButton = document.getElementById('createAccount');
+if (createButton) {
+    createButton.addEventListener('click', createAccount);
+    console.log("Event-Listener für createAccount hinzugefügt"); // Debugging
+} else {
+    console.error("Button #createAccount nicht gefunden!");
+}
 
 // Bot-Steuerung
 document.getElementById('startBot').addEventListener('click', () => {
-    if (!botWallet) {
-        alert("Bitte erstelle zuerst einen Account!");
-        return;
-    }
     document.getElementById('status').innerText = "Status: Bot läuft...";
 });
 
 document.getElementById('stopBot').addEventListener('click', () => {
-    if (!botWallet) {
-        alert("Bitte erstelle zuerst einen Account!");
-        return;
-    }
     document.getElementById('status').innerText = "Status: Bot ist gestoppt";
 });
-
-// Beim Laden prüfen, ob ein Account existiert (für Prototyp)
-window.onload = () => {
-    const savedUsername = localStorage.getItem('username');
-    const savedPublicKey = localStorage.getItem('botPublicKey');
-    if (savedUsername && savedPublicKey) {
-        document.getElementById('walletAddress').innerText = savedPublicKey;
-        document.getElementById('status').innerText = `Willkommen zurück, ${savedUsername}!`;
-        document.getElementById('registerForm').style.display = 'none';
-        document.getElementById('botControls').style.display = 'block';
-        // Private Key könnte hier geladen werden, aber nur für Prototyp
-    }
-};
 ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
