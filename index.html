@@ -51,8 +51,8 @@
     </div>
 
     <script>
-        // Verbindung zur Solana Blockchain herstellen
-        const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+        // Verbindung zur Solana Blockchain über alternativen RPC-Endpunkt
+        const connection = new solanaWeb3.Connection('https://rpc.ankr.com/solana');
 
         // Funktion zur Verbindung der Wallet
         async function connectWallet() {
