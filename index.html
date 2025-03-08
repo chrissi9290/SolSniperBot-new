@@ -12,28 +12,76 @@
     <p id="walletAddress"></p>
     <p id="status"></p>
 
+    <h2>Automatisierter Token Swap</h2>
+    <input type="text" id="inputToken" placeholder="Input Token (SOL)" />
+    <input type="text" id="outputToken" placeholder="Output Token (z.B. MEME)" />
+    <input type="number" id="amount" placeholder="Betrag in SOL" />
+    <button id="swapButton">Token tauschen</button>
+
     <script>
         const connectButton = document.getElementById('connectButton');
+        const swapButton = document.getElementById('swapButton');
         const walletAddressElement = document.getElementById('walletAddress');
         const statusElement = document.getElementById('status');
+        
+        let wallet;
 
         // Prüfen, ob Phantom Wallet vorhanden ist
         const isPhantomInstalled = window.solana && window.solana.isPhantom;
         if (!isPhantomInstalled) {
             statusElement.innerText = "Bitte installiere die Phantom Wallet-Erweiterung!";
             connectButton.disabled = true;
+            swapButton.disabled = true;
         }
 
         // Verbinden mit Phantom Wallet
         connectButton.onclick = async () => {
             try {
                 const resp = await window.solana.connect();
+                wallet = window.solana;
                 const publicKey = resp.publicKey.toString();
                 walletAddressElement.innerText = `Verbunden: ${publicKey}`;
                 statusElement.innerText = "Wallet erfolgreich verbunden!";
             } catch (err) {
                 console.error(err);
                 statusElement.innerText = "Verbindung fehlgeschlagen!";
+            }
+        };
+
+        // Raydium Swap-Funktion
+        swapButton.onclick = async () => {
+            const inputToken = document.getElementById('inputToken').value;
+            const outputToken = document.getElementById('outputToken').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            if (!wallet || !inputToken || !outputToken || !amount) {
+                statusElement.innerText = "Bitte alle Felder ausfüllen!";
+                return;
+            }
+
+            try {
+                statusElement.innerText = "Swap wird vorbereitet...";
+                
+                // Beispiel-Transaktion (muss durch tatsächliche Raydium-Logik ersetzt werden)
+                const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+                const transaction = new solanaWeb3.Transaction();
+
+                // Dummy-Transfer zu eigener Adresse (Test)
+                const transferInstruction = solanaWeb3.SystemProgram.transfer({
+                    fromPubkey: wallet.publicKey,
+                    toPubkey: wallet.publicKey,
+                    lamports: solanaWeb3.LAMPORTS_PER_SOL * amount,
+                });
+                transaction.add(transferInstruction);
+
+                // Signiere und sende die Transaktion
+                const { signature } = await wallet.signAndSendTransaction(transaction);
+                await connection.confirmTransaction(signature, 'processed');
+
+                statusElement.innerText = `Swap erfolgreich! Transaktions-ID: ${signature}`;
+            } catch (err) {
+                console.error(err);
+                statusElement.innerText = "Fehler beim Swap!";
             }
         };
     </script>
