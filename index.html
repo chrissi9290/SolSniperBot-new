@@ -1,75 +1,93 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolSniper Bot - Meme Coin Sniping</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            text-align: center;
-        }
-        h1 {
-            font-size: 48px;
-            color: #00ffcc;
-        }
-        .button {
-            background-color: #00ffcc;
-            color: #1a1a1a;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
-        }
-        .button:hover {
-            background-color: #00cc99;
-        }
-        .status {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-        input {
-            padding: 5px;
-            margin: 5px;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Friedrich – Moderne Website</title>
+  <!-- Verknüpfung der externen CSS-Datei -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Optionale Google Font Einbindung -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>SolSniper Bot</h1>
-        <p>Snipe Meme-Coins auf Pump.fun und Raydium in Echtzeit!</p>
-        
-        <!-- Registrierung -->
-        <div id="registerForm">
-            <h2>Account erstellen</h2>
-            <input type="text" id="username" placeholder="Benutzername" />
-            <input type="password" id="password" placeholder="Passwort" />
-            <button class="button" id="createAccount">Account erstellen</button>
-        </div>
 
-        <!-- Bot-Steuerung (nach Registrierung sichtbar) -->
-        <div id="botControls" style="display: none;">
-            <p>Bot-Wallet: <span id="walletAddress">Nicht erstellt</span></p>
-            <button class="button" id="startBot">Bot starten</button>
-            <button class="button" id="stopBot">Bot stoppen</button>
-            <div class="status" id="status">Status: Bot ist gestoppt</div>
-        </div>
+  <!-- Header mit Navigation -->
+  <header class="site-header">
+    <nav class="navbar container">
+      <div class="logo">Friedrich</div>
+      <ul class="nav-menu">
+        <li><a href="#about">Über uns</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#cta">Mitmachen</a></li>
+      </ul>
+      <!-- Hamburger-Menü Icon für Mobile -->
+      <button class="menu-toggle" aria-label="Menü umschalten">&#9776;</button>
+    </nav>
+  </header>
+
+  <!-- Hero-Bereich mit Hintergrund und CTA -->
+  <section class="hero container">
+    <h1>Willkommen bei <span>Friedrich</span></h1>
+    <p class="subtitle">Die Zukunft beginnt hier – modern, dynamisch und blau.</p>
+    <a href="Friedrich_Whitepaper_NoName.pdf" class="cta-button">Whitepaper herunterladen</a>
+    <!-- Blasen-Hintergrund -->
+    <div class="bubble-container">
+      <div class="bubble" style="width: 80px; height: 80px; left: 10%; animation-duration: 15s;"></div>
+      <div class="bubble" style="width: 100px; height: 100px; left: 30%; animation-duration: 20s; animation-delay: 2s;"></div>
+      <div class="bubble" style="width: 60px; height: 60px; left: 70%; animation-duration: 18s; animation-delay: 4s;"></div>
+      <div class="bubble" style="width: 90px; height: 90px; left: 85%; animation-duration: 22s; animation-delay: 1s;"></div>
+      <div class="bubble" style="width: 50px; height: 50px; left: 50%; animation-duration: 16s; animation-delay: 3s;"></div>
     </div>
+  </section>
 
-    <!-- Solana Web3.js über CDN laden -->
-    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-    <script src="script.js"></script>
+  <!-- Über uns Sektion -->
+  <section id="about" class="about-section container">
+    <h2>Über Friedrich</h2>
+    <p>Friedrich steht für einen modernen Aufbruch. Als Plattform, inspiriert von Elon4AfD, verbinden wir innovative Technologie mit traditionellen Werten. Erfahre, was uns antreibt und wie wir die Zukunft gestalten.</p>
+  </section>
+
+  <!-- Features Sektion -->
+  <section id="features" class="features-section container">
+    <h2>Unsere Features</h2>
+    <div class="features-grid">
+      <div class="feature-item">
+        <h3>Innovation</h3>
+        <p>Modernste Web-Technologie mit interaktiven 3D-Elementen und nahtlosen Animationen.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Responsivität</h3>
+        <p>Optimiert für alle Geräte – egal ob Smartphone, Tablet oder Desktop.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Benutzerfreundlich</h3>
+        <p>Intuitive Navigation und klare Strukturen für ein optimales Nutzererlebnis.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call-to-Action Sektion -->
+  <section id="cta" class="cta-section">
+    <div class="cta-content container">
+      <h2>Bereit, Teil der Bewegung zu werden?</h2>
+      <a href="Friedrich_Whitepaper_NoName.pdf" class="cta-button large">Jetzt mitmachen</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 Friedrich – Alle Rechte vorbehalten.</p>
+    </div>
+  </footer>
+
+  <!-- Optionales JavaScript für das mobile Menü -->
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+  </script>
+
 </body>
 </html>
-​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
